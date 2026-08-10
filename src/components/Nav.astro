@@ -1,0 +1,35 @@
+<nav class="nav">
+	<a class="brand" href="/">maru</a>
+	<div class="links">
+		<a href="/#projects">Projects</a>
+		<a href="/creative">Creative</a>
+		<a href="/#contact">Contact</a>
+	</div>
+</nav>
+
+<style>
+	.nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-block: 1.5rem;
+	}
+	.brand {
+		font-family: var(--font-mono);
+		font-weight: 600;
+		text-decoration: none;
+		letter-spacing: 0.02em;
+	}
+	.links {
+		display: flex;
+		gap: 1.75rem;
+	}
+	.links a {
+		text-decoration: none;
+		color: var(--ink-soft);
+		font-size: 0.95rem;
+	}
+	.links a:hover {
+		color: var(--ink);
+	}
+</style>

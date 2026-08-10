@@ -1,0 +1,123 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	entry: CollectionEntry<'projects'>;
+}
+
+const { entry } = Astro.props;
+const { title, tagline, stack, screenshot, screenshotAlt, repoUrl, liveUrl, caseStudy } = entry.data;
+
+// Case-study projects (no public repo) point at their own page on this site.
+// Everything else points straight at the GitHub README.
+const primaryHref = caseStudy ? `/projects/${entry.id}` : (repoUrl ?? liveUrl ?? '#');
+---
+
+<article class="card">
+	<a class="thumb-link" href={primaryHref}>
+		{
+			screenshot ? (
+				<img src={screenshot} alt={screenshotAlt ?? ''} loading="lazy" />
+			) : (
+				<div class="thumb-placeholder">screenshot coming soon</div>
+			)
+		}
+	</a>
+	<div class="card-body">
+		<h3><a href={primaryHref}>{title}</a></h3>
+		<p class="tagline">{tagline}</p>
+		<ul class="stack">
+			{stack.map((item) => <li>{item}</li>)}
+		</ul>
+		<div class="links">
+			{caseStudy && <a href={`/projects/${entry.id}`}>Case study →</a>}
+			{repoUrl && (
+				<a href={repoUrl} target="_blank" rel="noreferrer">
+					GitHub ↗
+				</a>
+			)}
+			{liveUrl && (
+				<a href={liveUrl} target="_blank" rel="noreferrer">
+					Live ↗
+				</a>
+			)}
+		</div>
+	</div>
+</article>
+
+<style>
+	.card {
+		border: 1px solid var(--hairline);
+		border-radius: 8px;
+		overflow: hidden;
+		background: var(--surface);
+		display: flex;
+		flex-direction: column;
+	}
+	.thumb-link {
+		display: block;
+		aspect-ratio: 16 / 10;
+		background: var(--surface-2);
+	}
+	.thumb-link img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.thumb-placeholder {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--ink-faint);
+		font-size: 0.85rem;
+		font-family: var(--font-mono);
+	}
+	.card-body {
+		padding: 1rem 1.25rem 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+	}
+	h3 {
+		font-size: 1.1rem;
+	}
+	h3 a {
+		text-decoration: none;
+	}
+	.tagline {
+		color: var(--ink-soft);
+		font-size: 0.92rem;
+	}
+	.stack {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		padding: 0;
+		margin: 0;
+	}
+	.stack li {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		background: var(--surface-2);
+		border: 1px solid var(--hairline);
+		border-radius: 4px;
+		padding: 0.15rem 0.4rem;
+		color: var(--ink-soft);
+	}
+	.links {
+		display: flex;
+		gap: 1rem;
+		margin-top: 0.25rem;
+	}
+	.links a {
+		font-size: 0.85rem;
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.links a:hover {
+		text-decoration: underline;
+	}
+</style>
