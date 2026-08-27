@@ -1,37 +1,49 @@
 ---
-import { astrolabe } from '../lib/astrolabe';
+import Instrument from './Instrument.astro';
+import type { Motion } from '../lib/astrolabe';
 
-/* The caption an instrument maker would engrave on the piece itself:
-   which one it is, what it is currently sighted at, and when its star
-   positions are reckoned from. See design/DESIGN.md §6. */
-const SPEC = ['Astrolabe no. 04', 'Alt +41° 12′', 'Epoch 2026.0'];
+/* The opening plate: lede on the left, instrument facing it on the right, an
+   engraved caption beneath. The front page and the 404 are the same plate with
+   different words — and on the 404, an instrument that has stopped. Both take
+   their layout from here, so neither can drift from the other. */
+
+interface Props {
+	eyebrow: string;
+	heading: string;
+	/** The italic gold tail of a heading, for headings that have one. */
+	headingTail?: string;
+	dek: string;
+	/** One filled link and however many quiet ones. */
+	links: { href: string; label: string; emphasis: 'filled' | 'quiet' }[];
+	/** The caption engraved under the drawing. Every part of it has to be true
+	    of the drawing itself — see design/DESIGN.md §6. */
+	spec: string[];
+	motion?: Motion;
+}
+
+const { eyebrow, heading, headingTail, dek, links, spec, motion } = Astro.props;
 ---
 
 <div class="hero">
 	<div>
-		<p class="eyebrow">Maru · Software Engineer</p>
-		<h1>Lorem ipsum dolor <em>sit amet elit</em></h1>
-		<p class="dek">
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-			incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-			exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-		</p>
+		<p class="eyebrow">{eyebrow}</p>
+		<h1>{heading}{headingTail && <Fragment>{' '}<em>{headingTail}</em></Fragment>}</h1>
+		<p class="dek">{dek}</p>
 		<div class="cta">
-			<a href="#register">Read the register →</a>
-			<a class="quiet" href="#field-notes">Field notes</a>
+			{
+				links.map((link) => (
+					<a class={link.emphasis === 'quiet' ? 'quiet' : undefined} href={link.href}>
+						{link.label}
+					</a>
+				))
+			}
 		</div>
 	</div>
 
 	<figure class="figure">
-		<svg
-			class="instrument"
-			viewBox="0 0 420 420"
-			role="img"
-			aria-label="An engraved astrolabe: a graduated limb, an almucantar plate, a slowly turning rete of star pointers, and a sighting alidade"
-			set:html={astrolabe()}
-		/>
+		<Instrument motion={motion} />
 		<figcaption>
-			{SPEC.map((item, index) => <span class={index === 0 ? 'name' : undefined}>{item}</span>)}
+			{spec.map((item, index) => <span class={index === 0 ? 'name' : undefined}>{item}</span>)}
 		</figcaption>
 	</figure>
 </div>
@@ -111,38 +123,6 @@ const SPEC = ['Astrolabe no. 04', 'Alt +41° 12′', 'Epoch 2026.0'];
 	.cta a.quiet:hover { color: var(--gold); border-bottom-color: var(--gold); }
 
 	.figure { margin: 0; }
-	.instrument { width: 100%; height: auto; display: block; }
-
-	/* Every stroke-only class has to name its fill: SVG's default is black,
-	   which on parchment paints a solid disc over the whole drawing. */
-	.instrument :global(.hair) { fill: none; stroke: var(--rule); stroke-width: 0.7; }
-	.instrument :global(.rule-gold) { fill: none; stroke: var(--gold-mid); stroke-width: 0.8; }
-	.instrument :global(.rule-gold-strong) { fill: none; stroke: var(--gold); stroke-width: 1; }
-	.instrument :global(.ink) { fill: none; stroke: var(--ink-faint); stroke-width: 0.8; }
-	.instrument :global(.ecliptic) { fill: none; stroke: var(--mauve); stroke-width: 1.1; }
-	.instrument :global(.pointer) { fill: none; stroke: var(--mauve-soft); stroke-width: 0.8; }
-	.instrument :global(.star) { fill: var(--mauve); stroke: none; }
-	.instrument :global(.fitting) { fill: var(--paper-2); stroke: var(--gold); stroke-width: 0.9; }
-	.instrument :global(.hub) { fill: var(--gold); stroke: none; }
-
-	.instrument :global(text) {
-		font-family: var(--font-mono);
-		font-size: 6.5px;
-		letter-spacing: 0.16em;
-		fill: var(--ink-faint);
-	}
-
-	/* The ecliptic draws itself in once, as if being struck. pathLength="1"
-	   on the circle is what lets one dash length cover any radius. */
-	.instrument :global(.trace-in) {
-		stroke-dasharray: 1;
-		stroke-dashoffset: 1;
-		animation: trace 2.8s ease-out forwards;
-	}
-
-	@keyframes trace {
-		to { stroke-dashoffset: 0; }
-	}
 
 	figcaption {
 		display: flex;

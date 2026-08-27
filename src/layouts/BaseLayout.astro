@@ -68,11 +68,22 @@ const FONTS =
 
 	/* Full-bleed, always. The masthead rack and the colophon run the width of
 	   the window on every page; only a reading column narrows, and it does that
-	   itself — see ReadingLayout. */
+	   itself — see ReadingLayout.
+
+	   The column is at least a screen tall so the colophon is held at the foot
+	   of the window on a page too short to fill one — otherwise it rides up
+	   under the content and reads as the end of a page that has not ended. */
 	.sheet {
 		position: relative;
 		z-index: 3;
 		padding-inline: var(--gut);
 		padding-block: 2rem 3.5rem;
+		display: flex;
+		flex-direction: column;
+		min-height: 100dvh;
 	}
+
+	/* Grow, never shrink: `flex: 1` alone would let a long page's content be
+	   compressed to the basis of zero it implies. */
+	main { flex: 1 0 auto; }
 </style>

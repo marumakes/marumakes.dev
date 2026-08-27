@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import { POINTER_COUNT } from '../lib/astrolabe';
+
+// True of the drawing beside it and of nothing else: it is the same astrolabe
+// as the front page's, carrying this many pointers, and it is not moving. The
+// count is read off the drawing rather than typed here, so the two cannot
+// drift. See design/DESIGN.md §6.
+const SPEC = ['Astrolabe', `${POINTER_COUNT} pointers`, 'Stopped'];
+
+const LINKS = [
+	{ href: '/', label: '← Back to the front page', emphasis: 'filled' as const },
+	{ href: '/creative', label: 'Field notes', emphasis: 'quiet' as const },
+];
+---
+
+<BaseLayout title="Not Found — Marumakes" description="No page is filed at this address.">
+	{/* The front page's opening plate, word for word the same furniture, with
+	    the instrument stopped between graduations. */}
+	<Hero
+		eyebrow="Error 404"
+		heading="Nothing filed here"
+		dek="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+		links={LINKS}
+		spec={SPEC}
+		motion="stopped"
+	/>
+</BaseLayout>
+
+<style>
+	/* Nothing follows the plate on this page. Left alone it hangs from the
+	   masthead with a screen of blank paper beneath it, so here — and only
+	   here — the plate sits in the middle of what is left.
+
+	   `main` belongs to BaseLayout, so this has to reach out of scope. The
+	   stylesheet ships with this page alone, which is as far as it reaches. */
+	:global(main) {
+		display: grid;
+		align-content: center;
+	}
+</style>

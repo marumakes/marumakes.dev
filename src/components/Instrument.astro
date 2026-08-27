@@ -1,0 +1,95 @@
+---
+import { astrolabe, type Motion } from '../lib/astrolabe';
+
+interface Props {
+	motion?: Motion;
+}
+
+const { motion = 'running' } = Astro.props;
+
+// The description is held to the same rule as an engraved caption: it may only
+// say what is actually there. A stopped instrument must not be described as
+// turning, or a reader using the label gets a different drawing from the one on
+// the page. See design/DESIGN.md §6.
+const LABELS: Record<Motion, string> = {
+	running:
+		'An engraved astrolabe: a graduated limb, an almucantar plate, a slowly turning rete of star pointers, and a sighting alidade',
+	stopped:
+		'An engraved astrolabe that has stopped: a graduated limb, an almucantar plate, and a rete and alidade halted between graduations, the rete straining against something and dropping back without ever turning',
+};
+---
+
+<svg
+	class="instrument"
+	viewBox="0 0 420 420"
+	role="img"
+	aria-label={LABELS[motion]}
+	set:html={astrolabe(motion)}
+/>
+
+<style>
+	.instrument { width: 100%; height: auto; display: block; }
+
+	/* Every stroke-only class has to name its fill: SVG's default is black,
+	   which on parchment paints a solid disc over the whole drawing. */
+	.instrument :global(.hair) { fill: none; stroke: var(--rule); stroke-width: 0.7; }
+	.instrument :global(.rule-gold) { fill: none; stroke: var(--gold-mid); stroke-width: 0.8; }
+	.instrument :global(.rule-gold-strong) { fill: none; stroke: var(--gold); stroke-width: 1; }
+	.instrument :global(.ink) { fill: none; stroke: var(--ink-faint); stroke-width: 0.8; }
+	.instrument :global(.ecliptic) { fill: none; stroke: var(--mauve); stroke-width: 1.1; }
+	.instrument :global(.pointer) { fill: none; stroke: var(--mauve-soft); stroke-width: 0.8; }
+	.instrument :global(.star) { fill: var(--mauve); stroke: none; }
+	.instrument :global(.fitting) { fill: var(--paper-2); stroke: var(--gold); stroke-width: 0.9; }
+	.instrument :global(.hub) { fill: var(--gold); stroke: none; }
+
+	.instrument :global(text) {
+		font-family: var(--font-mono);
+		font-size: 6.5px;
+		letter-spacing: 0.16em;
+		fill: var(--ink-faint);
+	}
+
+	/* The ecliptic draws itself in once, as if being struck. pathLength="1"
+	   on the circle is what lets one dash length cover any radius. A stopped
+	   instrument is drawn without this class. */
+	.instrument :global(.trace-in) {
+		stroke-dasharray: 1;
+		stroke-dashoffset: 1;
+		animation: trace 2.8s ease-out forwards;
+	}
+
+	@keyframes trace {
+		to { stroke-dashoffset: 0; }
+	}
+
+	/* A jammed rete: it strains against whatever is holding it, catches, and
+	   drops back short of where it started. It never reaches the next
+	   graduation, which is what separates a stuck instrument from a slow one.
+
+	   It turns about the plate's centre — the centre of the view box — rather
+	   than about its own bounding box, which the off-centre ecliptic drags
+	   sideways. `--rest` is the angle it was left at, given by the drawing.
+
+	   Under `prefers-reduced-motion` the global rule cuts the animation and the
+	   declaration below is what remains, so the instrument still stands at the
+	   angle it stopped at. It just stops trying. */
+	.instrument :global(.jammed) {
+		transform-box: view-box;
+		transform-origin: 50% 50%;
+		transform: rotate(var(--rest));
+		animation: judder 6.5s linear infinite;
+	}
+
+	/* Still for six of every six and a half seconds. The wait is what does the
+	   work: without it the twitching reads as a mechanism running badly rather
+	   than as one that has stopped. */
+	@keyframes judder {
+		0%, 88% { transform: rotate(var(--rest)); }
+		89.5% { transform: rotate(calc(var(--rest) + 2.4deg)); }
+		91% { transform: rotate(calc(var(--rest) + 0.9deg)); }
+		92.5% { transform: rotate(calc(var(--rest) + 2.8deg)); }
+		95% { transform: rotate(calc(var(--rest) + 0.4deg)); }
+		97% { transform: rotate(calc(var(--rest) - 0.6deg)); }
+		100% { transform: rotate(var(--rest)); }
+	}
+</style>

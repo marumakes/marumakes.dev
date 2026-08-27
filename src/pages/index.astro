@@ -7,6 +7,22 @@ import NoteStack from '../components/NoteStack.astro';
 import Correspondence from '../components/Correspondence.astro';
 import GearDivider from '../components/GearDivider.astro';
 
+// The caption an instrument maker would engrave on the piece itself: which one
+// it is, what it is currently sighted at, and when its star positions are
+// reckoned from.
+//
+// FIXME: DESIGN.md §6 records this exact string as cut for breaking the
+// honesty rule — nothing on the drawing says it is no. 04, and it is not
+// sighted at anything. Its replacement is `Astrolabe · Seven pointers · Limb
+// graduated 6°`. The decision was made; the code never followed. See
+// PORT-PLAN.md §1 item 7.
+const HERO_SPEC = ['Astrolabe no. 04', 'Alt +41° 12′', 'Epoch 2026.0'];
+
+const HERO_LINKS = [
+	{ href: '#register', label: 'Read the register →', emphasis: 'filled' as const },
+	{ href: '#field-notes', label: 'Field notes', emphasis: 'quiet' as const },
+];
+
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 
 // The stack opens on the newest note, so it is sorted by number descending —
@@ -18,7 +34,14 @@ const notes = (await getCollection('creative')).sort((a, b) => b.data.order - a.
 	title="Marumakes"
 	description="A register of software instruments, field notes from the table, and how to write."
 >
-	<Hero />
+	<Hero
+		eyebrow="Maru · Software Engineer"
+		heading="Lorem ipsum dolor"
+		headingTail="sit amet elit"
+		dek="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+		links={HERO_LINKS}
+		spec={HERO_SPEC}
+	/>
 
 	<GearDivider order={0} />
 	<Register projects={projects} />
