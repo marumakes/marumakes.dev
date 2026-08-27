@@ -1,0 +1,58 @@
+---
+import { makersMark } from '../lib/mechanism';
+
+/** The footer as a colophon: who kept the book, what it is set in, and what
+    inks it was printed with. */
+
+const REPO_URL = 'https://github.com/marumakes';
+const EPOCH = '2026.0';
+---
+
+<footer class="colophon">
+	<span class="seal-row">
+		<svg class="seal" width="52" height="34" viewBox="0 0 52 34" aria-hidden="true" set:html={makersMark()} />
+		<span>Kept by Maru</span>
+	</span>
+	<span>Set in Bodoni Moda, Spectral &amp; IBM Plex Mono</span>
+	<span>Inks — iron-gall &amp; mauveine</span>
+	<span>Epoch {EPOCH}</span>
+	<a href={REPO_URL}>github.com/marumakes ↗</a>
+</footer>
+
+<style>
+	.colophon {
+		margin-top: clamp(2.5rem, 6vh, 4rem);
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--gold-mid);
+		display: flex;
+		justify-content: space-between;
+		gap: 1.2rem 2.5rem;
+		flex-wrap: wrap;
+		font-family: var(--font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--ink-faint);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.seal-row {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+	}
+
+	.colophon a {
+		color: var(--gold);
+		text-decoration: none;
+	}
+
+	.colophon a:hover {
+		color: var(--ink);
+	}
+
+	.seal { display: block; }
+	.seal :global(.tooth) { fill: none; stroke: var(--gold-mid); stroke-width: 0.7; }
+	.seal :global(.ring) { fill: none; stroke: var(--gold); stroke-width: 0.8; }
+	.seal :global(.mark) { fill: var(--mauve); }
+</style>

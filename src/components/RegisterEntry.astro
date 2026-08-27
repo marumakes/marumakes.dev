@@ -1,0 +1,247 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { numberWheel } from '../lib/mechanism';
+import { conditionLabel, roman, type Condition } from '../lib/register';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+	/** Position in the register, from 1 — this is the plate number. */
+	position: number;
+}
+
+const { project, position } = Astro.props;
+const {
+	title, tagline, stack, mounting, finish, firstLight, designation, condition,
+	screenshot, screenshotAlt, repoUrl, liveUrl, caseStudy,
+} = project.data;
+
+const plate = roman(position);
+
+// Movement, Mounting, Finish — the spec column, in that order. A project with
+// nothing to mount simply doesn't get the row.
+const spec = [
+	{ term: 'Movement', value: stack.join(' · ') },
+	{ term: 'Mounting', value: mounting },
+	{ term: 'Finish', value: finish },
+].filter((row) => Boolean(row.value));
+
+// A live site is the strongest link there is, so it leads.
+const links = [
+	caseStudy ? { href: `/projects/${project.id}`, label: 'Case study' } : null,
+	liveUrl ? { href: liveUrl, label: liveUrl.replace(/^https?:\/\/(www\.)?/, '') } : null,
+	repoUrl ? { href: repoUrl, label: 'Repository' } : null,
+].filter((link) => link !== null);
+---
+
+<article class="entry">
+	<div class="index">
+		<span class="wheel">
+			<svg class="numwheel" viewBox="0 0 68 68" aria-hidden="true" set:html={numberWheel(position)} />
+			<span class="num">{plate}</span>
+		</span>
+		<span class="field">
+			<span class="k">First light</span>
+			<span class="v">{firstLight}</span>
+		</span>
+		<span class="field">
+			<span class="k">Condition</span>
+			<span class="v">{conditionLabel(condition as Condition)}</span>
+		</span>
+	</div>
+
+	<div class="plate">
+		<div class="window">
+			{
+				screenshot ? (
+					<img src={screenshot} alt={screenshotAlt ?? ''} loading="lazy" decoding="async" />
+				) : (
+					<span class="unstruck">Plate not struck</span>
+				)
+			}
+		</div>
+		<div class="plate-caption">
+			<span class="designation">{designation}</span>
+			<span>Plate {plate}</span>
+		</div>
+	</div>
+
+	<div class="body">
+		<h3>{title}</h3>
+		<p>{tagline}</p>
+		{
+			links.length > 0 && (
+				<div class="links">
+					{links.map((link) => (
+						<a href={link.href}>{link.label} →</a>
+					))}
+				</div>
+			)
+		}
+	</div>
+
+	<dl class="spec">
+		{spec.map((row) => (
+			<div>
+				<dt>{row.term}</dt>
+				<dd>{row.value}</dd>
+			</div>
+		))}
+	</dl>
+</article>
+
+<style>
+	/* index · plate · body · spec. The spec column is what carries content
+	   out to the right edge, so the row never reads as unfinished. */
+	.entry {
+		display: grid;
+		grid-template-columns: 8rem minmax(0, 18rem) minmax(0, 1fr) minmax(0, 13rem);
+		gap: clamp(1.4rem, 3vw, 3rem);
+		padding-block: clamp(2rem, 4vh, 2.9rem);
+		border-top: 1px solid var(--rule);
+		align-items: start;
+	}
+
+	.entry:first-of-type { border-top: 0; }
+
+	@media (max-width: 1180px) {
+		.entry { grid-template-columns: 8rem minmax(0, 16rem) minmax(0, 1fr); }
+		.spec { grid-column: 2 / -1; }
+	}
+
+	@media (max-width: 760px) {
+		.entry { grid-template-columns: 1fr; gap: 1.3rem; }
+		.spec { grid-column: auto; }
+	}
+
+	.index {
+		font-family: var(--font-mono);
+		font-size: 0.58rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--ink-faint);
+		font-variant-numeric: tabular-nums;
+		display: grid;
+		gap: 0.55rem;
+		justify-items: start;
+	}
+
+	.field { display: grid; gap: 0.05rem; }
+	.k { color: var(--gold); font-size: 0.52rem; letter-spacing: 0.22em; }
+	.v { color: var(--ink-soft); }
+
+	.wheel {
+		position: relative;
+		width: 4.6rem;
+		aspect-ratio: 1;
+		display: grid;
+		place-items: center;
+	}
+
+	.wheel svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+	.wheel .num {
+		position: relative;
+		font-family: var(--font-display);
+		font-size: 1.55rem;
+		line-height: 1;
+		letter-spacing: 0.04em;
+		color: var(--gold);
+	}
+
+	.numwheel :global(.tooth) { fill: none; stroke: var(--gold-mid); stroke-width: 0.8; }
+	.numwheel :global(.boss) { fill: none; stroke: var(--rule); stroke-width: 0.7; }
+	.entry:hover .numwheel :global(.tooth) { stroke: var(--gold); }
+
+	.plate {
+		border: 1px solid var(--rule);
+		background: rgba(244, 241, 231, 0.55);
+		padding: 0.7rem;
+		transition: border-color 0.3s ease;
+	}
+
+	.entry:hover .plate { border-color: var(--gold-mid); }
+
+	/* A mounted window, 16:10. Screenshots are contained, never cropped —
+	   their own aspect ratios run from 1.30 to 1.78.
+
+	   The ground is white, not parchment. Every screenshot is of a screen, and
+	   screens are lit — sitting one on a tinted ground left a visible seam
+	   wherever the image's own background met the mount. White reads as the
+	   glass the interface is behind, and the letterbox disappears into it. */
+	.window {
+		aspect-ratio: 16 / 10;
+		background: #fff;
+		border: 1px solid var(--rule-soft);
+		display: grid;
+		place-items: center;
+		overflow: hidden;
+	}
+
+	.window img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+	.unstruck {
+		font-family: var(--font-mono);
+		font-size: 0.55rem;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--ink-faint);
+	}
+
+	.plate-caption {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.8rem;
+		margin-top: 0.6rem;
+		padding-top: 0.45rem;
+		border-top: 1px solid var(--rule);
+		font-family: var(--font-mono);
+		font-size: 0.55rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--ink-faint);
+	}
+
+	.plate-caption .designation { color: var(--gold); }
+
+	.body h3 {
+		font-family: var(--font-display);
+		font-size: clamp(1.35rem, 2.1vw, 1.75rem);
+		font-weight: 400;
+		line-height: 1.16;
+		color: var(--ink);
+	}
+
+	.body p { margin-top: 0.8rem; max-width: 52ch; color: var(--ink-soft); }
+
+	.links {
+		display: flex;
+		gap: 1.6rem;
+		flex-wrap: wrap;
+		margin-top: 1.2rem;
+		font-family: var(--font-mono);
+		font-size: 0.63rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+	}
+
+	.links a {
+		color: var(--gold);
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	.links a:hover { color: var(--ink); border-bottom-color: var(--gold); }
+
+	.spec {
+		display: grid;
+		gap: 0.8rem;
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: 0.63rem;
+	}
+
+	.spec div { display: grid; gap: 0.12rem; }
+	.spec dt { font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+	.spec dd { margin: 0; color: var(--ink); }
+</style>

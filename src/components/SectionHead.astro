@@ -1,0 +1,64 @@
+---
+interface Props {
+	title: string;
+	/** The right-hand mono note — a count, a date range, a standing offer. */
+	meta: string;
+	/** Makes the note a link, for sections that continue on their own page. */
+	metaHref?: string;
+	id: string;
+}
+
+const { title, meta, metaHref, id } = Astro.props;
+---
+
+<div class="sec-head">
+	<h2 id={id}>{title}</h2>
+	{
+		metaHref ? (
+			<a class="meta" href={metaHref}>
+				{meta}
+			</a>
+		) : (
+			<span class="meta">{meta}</span>
+		)
+	}
+</div>
+
+<style>
+	.sec-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+		padding-bottom: 0.9rem;
+		border-bottom: 1px solid var(--gold-mid);
+		margin-bottom: 0.5rem;
+	}
+
+	h2 {
+		font-family: var(--font-display);
+		font-size: 1.15rem;
+		font-weight: 500;
+		letter-spacing: 0.28em;
+		text-transform: uppercase;
+		color: var(--ink);
+	}
+
+	.meta {
+		font-family: var(--font-mono);
+		font-size: 0.61rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--gold);
+		font-variant-numeric: tabular-nums;
+	}
+
+	a.meta {
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	a.meta:hover { color: var(--ink); border-bottom-color: var(--gold); }
+</style>

@@ -1,56 +1,49 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingLayout from '../../layouts/ReadingLayout.astro';
+import { filedLabel, lengthLabel, wordCount } from '../../lib/register';
 
 export async function getStaticPaths() {
-	const entries = await getCollection('creative');
-	return entries.map((entry) => ({
-		params: { slug: entry.id },
-		props: { entry },
+	const notes = await getCollection('creative');
+
+	return notes.map((note) => ({
+		params: { slug: note.id },
+		props: { note },
 	}));
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
-const { title, summary } = entry.data;
+const KINDS = {
+	class: 'Class',
+	monster: 'Monster',
+	article: 'Article',
+} as const;
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const { title, summary, kind, order, filed } = note.data;
+
+// The same four rows as the index card on the homepage stack, so the note
+// carries its own catalogue entry through to the page.
+const words = wordCount(note.body ?? '');
+
+const spec = [
+	{ term: 'Kind', value: KINDS[kind] },
+	{ term: 'No.', value: String(order) },
+	{ term: 'Filed', value: filedLabel(filed) },
+	{ term: 'Length', value: lengthLabel(words) },
+];
 ---
 
-<BaseLayout title={`${title} — maru`} description={summary}>
-	<article class="wrap piece">
-		<a class="back" href="/creative">← Creative</a>
-		<h1>{title}</h1>
-		<p class="summary">{summary}</p>
-		<div class="body">
-			<Content />
-		</div>
-	</article>
-</BaseLayout>
-
-<style>
-	.piece {
-		padding-block: 2rem 5rem;
-		max-width: 42rem;
-	}
-	.back {
-		font-size: 0.85rem;
-		color: var(--ink-faint);
-		text-decoration: none;
-	}
-	h1 {
-		font-size: 2rem;
-		margin-top: 1rem;
-	}
-	.summary {
-		color: var(--ink-soft);
-		margin-top: 0.75rem;
-		font-size: 1.05rem;
-	}
-	.body {
-		margin-top: 2.5rem;
-		line-height: 1.7;
-	}
-	.body :global(p) {
-		color: var(--ink-soft);
-		margin-bottom: 1rem;
-	}
-</style>
+<ReadingLayout
+	title={`${title} — Marumakes`}
+	description={summary}
+	eyebrow={`Field note ${order} · ${KINDS[kind]}`}
+	heading={title}
+	standfirst={summary}
+	back={{ href: '/#field-notes', label: 'Field Notes' }}
+	spec={spec}
+	seed={note.id}
+	words={words}
+>
+	<Content />
+</ReadingLayout>

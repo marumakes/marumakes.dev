@@ -1,0 +1,62 @@
+---
+import { marginalArrangement, marginalWheel, type Side } from '../lib/mechanism';
+
+interface Props {
+	/** Anything stable about the page — its slug. Fixes the arrangement so it
+	    is the same on every build, and different from the next page's. */
+	seed: string;
+	/** Length of the piece, so short drafts don't get furniture they can't carry. */
+	words: number;
+	/** Which margin this instance fills. Mounted once per gutter. */
+	side: Side;
+}
+
+const { seed, words, side } = Astro.props;
+
+// What the page carries is decided once, in the drawing layer, so the two
+// margins are drawn from one sequence and can't repeat or mirror each other.
+const wheels = marginalArrangement(seed, words).filter((wheel) => wheel.side === side);
+---
+
+{
+	wheels.map((wheel) => (
+		<svg
+			class={`cog cog-${side}`}
+			viewBox="0 0 400 400"
+			aria-hidden="true"
+			style={`--size:${wheel.size}rem; --inset:${wheel.inset}rem; --top:${wheel.top}%; --ghost:${wheel.opacity}`}
+			set:html={marginalWheel(wheel.teeth, wheel.spokes)}
+		/>
+	))
+}
+
+<style>
+	/* Drawn at its own size, which may be wider than the margin holding it. A
+	   wheel that overruns is cut off by the edge of the window — deliberately,
+	   because drawings that all sit inside their column read as placed rather
+	   than scattered.
+
+	   Every wheel is therefore anchored to the *inner* edge of its margin and
+	   grows outward: the left margin's are pinned by their right edge, the
+	   right margin's by their left. That is what guarantees an overrun can only
+	   ever leave the page, and never reach the text, the gauge or the card. The
+	   anchor is an inset from this parent, not a sum worked out from the page
+	   dimensions — duplicating the grid's arithmetic is what once drew a wheel
+	   straight across the text. */
+	.cog {
+		position: absolute;
+		top: var(--top);
+		width: var(--size);
+		height: auto;
+		opacity: var(--ghost);
+	}
+
+	.cog-left { right: var(--inset); }
+	.cog-right { left: var(--inset); }
+
+	.cog :global(.ring) {
+		fill: none;
+		stroke: var(--line-ghost);
+		stroke-width: 1.4;
+	}
+</style>

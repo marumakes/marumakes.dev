@@ -1,0 +1,46 @@
+---
+import { dividerTrain } from '../lib/mechanism';
+
+interface Props {
+	/** Picks the tooth order, so consecutive dividers don't read as copies. */
+	order?: number;
+}
+
+const { order = 0 } = Astro.props;
+---
+
+<div class="gears" aria-hidden="true">
+	<span class="bar"></span>
+	<svg class="train" viewBox="0 0 176 48" width="176" height="48" set:html={dividerTrain(order)} />
+	<span class="bar"></span>
+</div>
+
+<style>
+	.gears {
+		display: flex;
+		align-items: center;
+		gap: 1.2rem;
+		margin-top: clamp(2rem, 6vh, 3.6rem);
+	}
+
+	/* Graduated bars, so the train reads as running along a scale. */
+	.bar {
+		flex: 1;
+		height: 8px;
+		background-image: repeating-linear-gradient(90deg, var(--gold-mid) 0 1px, transparent 1px 11px);
+		background-size: 100% 4px;
+		background-position: 0 100%;
+		background-repeat: no-repeat;
+		border-bottom: 1px solid var(--gold-mid);
+	}
+
+	.train {
+		flex: none;
+		display: block;
+	}
+
+	.train :global(.tooth) { fill: none; stroke: var(--gold-mid); stroke-width: 0.8; }
+	.train :global(.tooth.lead) { stroke: var(--gold); }
+	.train :global(.boss) { fill: none; stroke: var(--rule); stroke-width: 0.7; }
+	.train :global(.arbor) { fill: var(--gold); }
+</style>

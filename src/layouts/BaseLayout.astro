@@ -1,6 +1,8 @@
 ---
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
+import { ClientRouter } from 'astro:transitions';
+import Masthead from '../components/Masthead.astro';
+import Colophon from '../components/Colophon.astro';
+import PaperGrain from '../components/PaperGrain.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -9,6 +11,20 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+
+// Three faces, three jobs.
+//
+// Bodoni Moda is requested *without* its optical-size axis on purpose. With
+// `opsz` in the request the browser sizes it automatically, and at hero size
+// picks the display cut — whose hairlines are so fine the headings look faded.
+// Omitting the axis serves the text cut at every size, which is the weight the
+// design was signed off at.
+const FONTS =
+	'https://fonts.googleapis.com/css2' +
+	'?family=Bodoni+Moda:ital,wght@0,400;0,500;1,400' +
+	'&family=IBM+Plex+Mono:wght@400;500' +
+	'&family=Spectral:ital,wght@0,300;0,400;0,500;1,400' +
+	'&display=swap';
 ---
 
 <html lang="en">
@@ -18,17 +34,45 @@ const { title, description } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="stylesheet" href={FONTS} />
 		<title>{title}</title>
+		<ClientRouter />
 	</head>
 	<body>
-		<div class="wrap">
-			<Nav />
-		</div>
-		<main>
-			<slot />
-		</main>
-		<div class="wrap">
-			<Footer />
+		<PaperGrain />
+		<div class="sheet">
+			<Masthead />
+			<main>
+				<slot />
+			</main>
+			<Colophon />
 		</div>
 	</body>
 </html>
+
+<style>
+	body {
+		/* The ghosted wheel deliberately runs past the right edge, and a reading
+		   page's marginal wheels run past both — they are drawn larger than the
+		   margins holding them so that some are cut off by the window. Without
+		   this, every overrun would widen the document and the page would scroll
+		   sideways.
+
+		   `clip`, not `hidden`: hidden would make this a scroll container, and
+		   the index card in a reading page's right margin is `position: sticky`
+		   against the viewport. It would stop sticking. */
+		overflow-x: clip;
+	}
+
+	/* Full-bleed, always. The masthead rack and the colophon run the width of
+	   the window on every page; only a reading column narrows, and it does that
+	   itself — see ReadingLayout. */
+	.sheet {
+		position: relative;
+		z-index: 3;
+		padding-inline: var(--gut);
+		padding-block: 2rem 3.5rem;
+	}
+</style>

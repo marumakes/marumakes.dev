@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { ghostWheel } from '../lib/mechanism';
+import RegisterEntry from './RegisterEntry.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+	projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+
+// The range comes from the entries themselves rather than being written down,
+// so it can't drift when a project is added.
+const years = projects.map((project) => project.data.firstLight);
+const span = `${projects.length} instruments · ${Math.min(...years)} – ${Math.max(...years)}`;
+---
+
+<section class="register" aria-labelledby="register">
+	<svg class="ghost" viewBox="0 0 560 560" aria-hidden="true" set:html={ghostWheel()} />
+	<SectionHead id="register" title="The Register" meta={span} />
+	{projects.map((project, index) => <RegisterEntry project={project} position={index + 1} />)}
+</section>
+
+<style>
+	.register {
+		padding-top: clamp(2rem, 5vh, 3.4rem);
+		position: relative;
+	}
+
+	/* A great wheel ghosted behind the entries, running off the right edge
+	   the way it would on a shop drawing that was never trimmed. */
+	.ghost {
+		position: absolute;
+		top: 6rem;
+		right: -14rem;
+		width: 34rem;
+		z-index: -1;
+		pointer-events: none;
+		opacity: 0.6;
+	}
+
+	.ghost :global(.ring) { fill: none; stroke: var(--line-ghost); stroke-width: 1; }
+
+	@media (max-width: 1100px) {
+		.ghost { display: none; }
+	}
+</style>

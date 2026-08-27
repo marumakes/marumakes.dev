@@ -1,15 +1,31 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import ProjectsSection from '../components/ProjectsSection.astro';
-import Contact from '../components/Contact.astro';
+import Register from '../components/Register.astro';
+import NoteStack from '../components/NoteStack.astro';
+import Correspondence from '../components/Correspondence.astro';
+import GearDivider from '../components/GearDivider.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
+// The stack opens on the newest note, so it is sorted by number descending —
+// No. 1 is the first one written and sits deepest.
+const notes = (await getCollection('creative')).sort((a, b) => b.data.order - a.data.order);
 ---
 
 <BaseLayout
-	title="maru"
-	description="Software engineering portfolio — projects, and a separate D&D creative side."
+	title="Marumakes"
+	description="A register of software instruments, field notes from the table, and how to write."
 >
 	<Hero />
-	<ProjectsSection />
-	<Contact />
+
+	<GearDivider order={0} />
+	<Register projects={projects} />
+
+	<GearDivider order={1} />
+	<NoteStack notes={notes} />
+
+	<GearDivider order={2} />
+	<Correspondence />
 </BaseLayout>

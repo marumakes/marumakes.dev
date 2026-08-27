@@ -1,0 +1,316 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SectionHead from './SectionHead.astro';
+import { filedLabel, filedYear, lengthLabel, wordCount } from '../lib/register';
+
+interface Props {
+	notes: CollectionEntry<'creative'>[];
+}
+
+const { notes } = Astro.props;
+
+// How much darker each leaf sits in the stack. The newest note is at the
+// front, so depth reads as age.
+const LEAF_SHADES = ['#f4f1e7', '#efeade', '#e9e3d5', '#e4ddcd'];
+
+/** The name the browser morphs the fore-edge into the opened page under. */
+const PAGE_MORPH = 'note-page';
+
+const KINDS: Record<CollectionEntry<'creative'>['data']['kind'], string> = {
+	class: 'Class',
+	monster: 'Monster',
+	article: 'Article',
+};
+
+// Length is measured at build time from the markdown the author actually
+// wrote, so it can never drift out of step with the piece.
+const leaves = notes.map((note) => ({
+	id: note.id,
+	title: note.data.title,
+	summary: note.data.summary,
+	kind: KINDS[note.data.kind],
+	number: note.data.order,
+	filed: filedLabel(note.data.filed),
+	year: filedYear(note.data.filed),
+	length: lengthLabel(wordCount(note.body ?? '')),
+}));
+---
+
+<section class="notes" aria-labelledby="field-notes">
+	<SectionHead id="field-notes" title="Field Notes" meta="The whole notebook →" metaHref="/creative" />
+
+	<div class="stack" id="note-stack">
+		<div class="pages">
+			{
+				leaves.map((leaf, index) => (
+					<article
+						class="page"
+						data-note={index}
+						hidden={index !== 0}
+						style={index === 0 ? `view-transition-name: ${PAGE_MORPH}` : undefined}
+					>
+						<div>
+							<h3>{leaf.title}</h3>
+							<p class="summary">{leaf.summary}</p>
+							<a class="read" href={`/creative/${leaf.id}`}>
+								Read the note →
+							</a>
+						</div>
+						<dl class="card">
+							<div>
+								<dt>Kind</dt>
+								<dd>{leaf.kind}</dd>
+							</div>
+							<div>
+								<dt>No.</dt>
+								<dd>{leaf.number}</dd>
+							</div>
+							<div>
+								<dt>Filed</dt>
+								<dd>{leaf.filed}</dd>
+							</div>
+							<div>
+								<dt>Length</dt>
+								<dd>{leaf.length}</dd>
+							</div>
+						</dl>
+					</article>
+				))
+			}
+		</div>
+
+		<div class="edges">
+			{
+				leaves.map((leaf, index) => (
+					<button
+						class="edge"
+						type="button"
+						data-note={index}
+						hidden={index === 0}
+						aria-label={`Turn to ${leaf.title}, note ${leaf.number}`}
+						style={`--depth:${index}; --leaf:${LEAF_SHADES[index % LEAF_SHADES.length]}`}
+					>
+						No. {leaf.number} · {leaf.year}
+					</button>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.notes { padding-top: clamp(2rem, 5vh, 3.4rem); }
+
+	.stack {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: stretch;
+		margin-top: 2rem;
+	}
+
+	@media (max-width: 700px) {
+		.stack { grid-template-columns: 1fr; }
+	}
+
+	/* The open leaf: the writing on the left, its index card on the right —
+	   the same right-hand mono column the register entries end with. */
+	.page {
+		border: 1px solid var(--rule);
+		background: var(--paper-2);
+		padding: clamp(1.5rem, 4vw, 2.7rem);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 13rem);
+		gap: clamp(1.5rem, 4vw, 3.5rem);
+		align-items: start;
+		height: 100%;
+		box-shadow: 2px 0 0 rgba(28, 25, 21, 0.04), 4px 0 0 rgba(28, 25, 21, 0.03);
+	}
+
+	.page[hidden] { display: none; }
+
+	@media (max-width: 900px) {
+		.page { grid-template-columns: 1fr; gap: 1.6rem; }
+	}
+
+	/* The title carries the page — no pulled quote, no hook, and no rule above
+	   it either. The section head's own gold rule is the only divider the
+	   notes need; a second one directly beneath it just crowded the title. */
+	.page h3 {
+		font-family: var(--font-display);
+		font-size: clamp(1.9rem, 4vw, 3rem);
+		font-weight: 400;
+		line-height: 1.1;
+		letter-spacing: 0.005em;
+		max-width: 20ch;
+		color: var(--ink);
+	}
+
+	.summary { margin-top: 1.2rem; max-width: 58ch; color: var(--ink-soft); }
+
+	.read {
+		display: inline-block;
+		margin-top: 1.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.63rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--gold);
+		text-decoration: none;
+		border-bottom: 1px solid var(--rule);
+		padding-bottom: 3px;
+	}
+
+	.read:hover { color: var(--ink); border-bottom-color: var(--gold); }
+
+	.card {
+		display: grid;
+		gap: 0.8rem;
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: 0.63rem;
+		border-left: 1px solid var(--rule);
+		padding-left: clamp(1rem, 2vw, 1.5rem);
+	}
+
+	@media (max-width: 900px) {
+		.card { border-left: 0; border-top: 1px solid var(--rule); padding: 1.1rem 0 0; }
+	}
+
+	.card div { display: grid; gap: 0.12rem; }
+	.card dt { font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+	.card dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+	/* The closed leaves, seen fore-edge on and overlapping into a stack. */
+	.edges { display: flex; align-items: stretch; }
+
+	.edge {
+		width: 2.9rem;
+		border: 1px solid var(--rule);
+		background: var(--leaf);
+		color: var(--ink-faint);
+		font-family: var(--font-mono);
+		font-size: 0.57rem;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		writing-mode: vertical-rl;
+		display: grid;
+		place-items: center;
+		padding: 1.4rem 0;
+		cursor: pointer;
+		font-variant-numeric: tabular-nums;
+		box-shadow: inset 2px 0 3px -2px rgba(28, 25, 21, 0.16);
+		transition: transform 0.25s ease, color 0.25s ease;
+
+		/* Each leaf sits a little deeper than the one in front of it. These
+		   must be physical: in a vertical writing mode the block axis runs
+		   horizontally, so margin-block would space the leaves apart instead. */
+		margin-top: calc(0.4rem + var(--depth) * 0.45rem);
+		margin-bottom: calc(0.4rem + var(--depth) * 0.45rem);
+	}
+
+	.edge[hidden] { display: none; }
+
+	/* Overlap by a hairline so the leaves share an edge instead of floating
+	   apart — and only against a leaf that is actually on screen. */
+	.edge:not([hidden]) + .edge { margin-left: -1px; }
+
+	.edge:hover,
+	.edge:focus-visible { color: var(--gold); transform: translateY(-3px); }
+
+	@media (max-width: 700px) {
+		.edges { border-top: 1px solid var(--rule); }
+
+		.edge {
+			writing-mode: horizontal-tb;
+			width: auto;
+			flex: 1;
+			margin: 0;
+			border-left: 1px solid var(--rule);
+			padding: 0.75rem 0;
+		}
+	}
+</style>
+
+<script>
+	/* The whole stack is in the HTML — the script only changes which leaf is
+	   open, so the section works with JavaScript off and every note's text is
+	   there for crawlers.
+
+	   Turning a page hands the morph name from the open page to the clicked
+	   fore-edge, so the edge is what the browser sees growing into the new
+	   page. Two elements may not share the name in one state, which is why it
+	   is moved rather than copied. */
+	const PAGE_MORPH = 'note-page';
+
+	function setUp() {
+		const stack = document.getElementById('note-stack');
+
+		if (!stack) {
+			return;
+		}
+
+		const pages = Array.from(stack.querySelectorAll<HTMLElement>('.page'));
+		const edges = Array.from(stack.querySelectorAll<HTMLElement>('.edge'));
+
+		function open(index: number) {
+			pages.forEach((page, i) => {
+				page.hidden = i !== index;
+				page.style.viewTransitionName = i === index ? PAGE_MORPH : '';
+			});
+
+			edges.forEach((edge, i) => {
+				edge.hidden = i === index;
+				edge.style.viewTransitionName = '';
+			});
+		}
+
+		function turnTo(index: number, edge: HTMLElement) {
+			const stillness = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+			if (stillness.matches || !document.startViewTransition) {
+				open(index);
+				return;
+			}
+
+			pages.forEach((page) => {
+				page.style.viewTransitionName = '';
+			});
+			edge.style.viewTransitionName = PAGE_MORPH;
+
+			document.startViewTransition(() => open(index));
+		}
+
+		stack.addEventListener('click', (event) => {
+			const edge = (event.target as HTMLElement).closest<HTMLElement>('.edge');
+
+			if (!edge) {
+				return;
+			}
+
+			turnTo(Number(edge.dataset.note), edge);
+		});
+
+		// Arrow keys turn pages while a fore-edge has focus, so the stack is
+		// navigable the way a real one would be.
+		stack.addEventListener('keydown', (event) => {
+			const edge = (event.target as HTMLElement).closest<HTMLElement>('.edge');
+
+			if (!edge || (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft')) {
+				return;
+			}
+
+			const visible = edges.filter((candidate) => !candidate.hidden);
+			const step = event.key === 'ArrowRight' ? 1 : -1;
+			const next = visible[visible.indexOf(edge) + step];
+
+			if (!next) {
+				return;
+			}
+
+			event.preventDefault();
+			next.focus();
+		});
+	}
+
+	document.addEventListener('astro:page-load', setUp);
+</script>

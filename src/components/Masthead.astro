@@ -1,0 +1,74 @@
+---
+/** Brand and navigation, sitting on a toothed rack — the first piece of
+    mechanism on the page, and the only one in the masthead. */
+
+// Field Notes goes to the archive rather than the homepage stack: the stack is
+// a taster that only ever shows one note open, so a reader who deliberately
+// asks for the notes should land on all of them.
+const links = [
+	{ href: '/#register', label: 'Register' },
+	{ href: '/creative', label: 'Field Notes' },
+	{ href: '/#correspondence', label: 'Correspondence' },
+];
+---
+
+<header class="head">
+	<a class="brand" href="/">Marumakes</a>
+	<nav class="nav" aria-label="Sections">
+		{links.map((link) => <a href={link.href}>{link.label}</a>)}
+	</nav>
+</header>
+<div class="rack" aria-hidden="true"></div>
+
+<style>
+	.head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		padding-bottom: 1.1rem;
+	}
+
+	.brand {
+		font-family: var(--font-display);
+		font-size: clamp(1.4rem, 2.3vw, 1.85rem);
+		font-weight: 500;
+		letter-spacing: 0.3em;
+		text-transform: uppercase;
+		color: var(--ink);
+		text-decoration: none;
+		line-height: 1;
+	}
+
+	.nav {
+		display: flex;
+		gap: 2rem;
+		flex-wrap: wrap;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+	}
+
+	.nav a {
+		color: var(--ink-soft);
+		text-decoration: none;
+		padding-bottom: 3px;
+		border-bottom: 1px solid transparent;
+	}
+
+	.nav a:hover {
+		color: var(--gold);
+		border-bottom-color: var(--gold-mid);
+	}
+
+	/* A cut rack: teeth above a solid rail. */
+	.rack {
+		height: 9px;
+		background-image: repeating-linear-gradient(90deg, var(--gold-mid) 0 3px, transparent 3px 10px);
+		background-size: 100% 4px;
+		background-repeat: no-repeat;
+		border-top: 1px solid var(--gold-mid);
+	}
+</style>

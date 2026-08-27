@@ -1,0 +1,83 @@
+---
+/**
+ * Paper tooth and foxing, drawn once onto a fixed canvas behind everything.
+ *
+ * It is decoration with no meaning, so it is hidden from assistive tech and
+ * is fine to skip entirely if the canvas context is unavailable.
+ */
+---
+
+<canvas class="grain" id="paper-grain" aria-hidden="true"></canvas>
+
+<style>
+	.grain {
+		position: fixed;
+		inset: 0;
+		z-index: 1;
+		pointer-events: none;
+		opacity: 0.45;
+	}
+</style>
+
+<script>
+	// One fleck per this many square pixels, and one age bloom per this many.
+	const FLECK_DENSITY = 260;
+	const BLOOM_DENSITY = 90000;
+	const RESIZE_SETTLE_MS = 180;
+
+	function paint() {
+		const canvas = document.getElementById('paper-grain') as HTMLCanvasElement | null;
+		const context = canvas?.getContext('2d');
+
+		if (!canvas || !context) {
+			return;
+		}
+
+		const ratio = window.devicePixelRatio || 1;
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+
+		canvas.width = width * ratio;
+		canvas.height = height * ratio;
+		canvas.style.width = `${width}px`;
+		canvas.style.height = `${height}px`;
+		context.setTransform(ratio, 0, 0, ratio, 0, 0);
+		context.clearRect(0, 0, width, height);
+
+		// Fibre speckle: light and dark specks in roughly equal measure.
+		const flecks = Math.round((width * height) / FLECK_DENSITY);
+		for (let i = 0; i < flecks; i += 1) {
+			const shade = Math.random() > 0.5 ? '29, 26, 22' : '255, 252, 242';
+			context.fillStyle = `rgba(${shade}, ${(Math.random() * 0.05).toFixed(3)})`;
+			context.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+		}
+
+		// Foxing: a scatter of faint age blooms.
+		const blooms = Math.round((width * height) / BLOOM_DENSITY);
+		for (let i = 0; i < blooms; i += 1) {
+			const x = Math.random() * width;
+			const y = Math.random() * height;
+			const radius = 12 + Math.random() * 34;
+			const wash = context.createRadialGradient(x, y, 0, x, y, radius);
+
+			wash.addColorStop(0, 'rgba(140, 106, 54, 0.05)');
+			wash.addColorStop(1, 'rgba(140, 106, 54, 0)');
+			context.fillStyle = wash;
+			context.beginPath();
+			context.arc(x, y, radius, 0, Math.PI * 2);
+			context.fill();
+		}
+	}
+
+	let settle: number | undefined;
+
+	function repaintWhenSettled() {
+		window.clearTimeout(settle);
+		settle = window.setTimeout(paint, RESIZE_SETTLE_MS);
+	}
+
+	// astro:page-load fires on first load and after every client-side
+	// navigation, so the canvas is redrawn for whichever page is now on screen.
+	document.addEventListener('astro:page-load', paint);
+	window.addEventListener('resize', repaintWhenSettled);
+</script>

@@ -1,0 +1,133 @@
+---
+/**
+ * A graduated rule down the inner edge of the margin, with an index that
+ * travels as you read.
+ *
+ * It measures something real — how far through the text you are — which is
+ * what earns it a place on a page where nothing else is decoration for its own
+ * sake. The graduations are the same language as the masthead rack and the
+ * bars either side of the gear dividers.
+ *
+ * The scale is markup and the index is moved by script, so the two degrade
+ * separately: with JavaScript off the rule still stands as an ornament. It was
+ * built as a CSS scroll timeline first, which cost nothing to run but never
+ * moved in Firefox — see DESIGN.md §8.
+ */
+---
+
+<div class="gauge" aria-hidden="true">
+	<span class="scale"></span>
+	<span class="index"></span>
+</div>
+
+<style>
+	.gauge {
+		position: relative;
+		height: 100%;
+		width: 1.1rem;
+	}
+
+	/* The rule itself, ticked every 14px against a continuous edge. */
+	.scale {
+		position: absolute;
+		inset: 0 0 0 auto;
+		width: 100%;
+		border-right: 1px solid var(--rule);
+		background-image: repeating-linear-gradient(
+			to bottom,
+			var(--rule) 0 1px,
+			transparent 1px 14px
+		);
+		background-size: 0.4rem 100%;
+		background-position: 100% 0;
+		background-repeat: repeat-y;
+	}
+
+	/* The index: a gold graduation twice the length of the others, sitting
+	   across the rule the way a vernier index sits across a scale. */
+	.index {
+		position: absolute;
+		right: -0.2rem;
+		top: 0;
+		width: 0.9rem;
+		height: 1px;
+		background: var(--gold);
+	}
+
+	.index::after {
+		content: '';
+		position: absolute;
+		right: -0.2rem;
+		top: -0.16rem;
+		width: 0.35rem;
+		height: 0.35rem;
+		background: var(--gold);
+		/* A small pointer, like the index mark on an alidade. */
+		clip-path: polygon(100% 0, 100% 100%, 0 50%);
+	}
+
+	/* Nothing to point at once the margin is gone. */
+	@media (max-width: 1240px) {
+		.gauge { display: none; }
+	}
+</style>
+
+<script>
+	/**
+	 * Move the index in step with the read.
+	 *
+	 * Progress runs from the text's top meeting the top of the window to its
+	 * bottom meeting the bottom, so it measures the writing rather than the
+	 * page — the masthead and colophon are not part of the read. The index is
+	 * placed as a percentage of the column, which puts it beside whichever
+	 * paragraph is on screen.
+	 *
+	 * It tracks scroll under `prefers-reduced-motion` too. Reduced motion is
+	 * about movement the reader did not ask for; this only ever moves because
+	 * they scrolled.
+	 */
+	let index: HTMLElement | null = null;
+	let prose: HTMLElement | null = null;
+	let queued = false;
+
+	function place() {
+		queued = false;
+
+		if (!index || !prose) {
+			return;
+		}
+
+		const box = prose.getBoundingClientRect();
+		const travel = box.height - window.innerHeight;
+
+		// A piece shorter than the window is read all at once; there is no
+		// progress to report, so the index stays at the top.
+		const read = travel > 0 ? Math.min(Math.max(-box.top / travel, 0), 1) : 0;
+
+		index.style.top = `${(read * 100).toFixed(3)}%`;
+	}
+
+	// Scroll fires far faster than the screen repaints; one placement per frame
+	// is all that can be seen.
+	function queue() {
+		if (queued) {
+			return;
+		}
+
+		queued = true;
+		requestAnimationFrame(place);
+	}
+
+	// The page's elements are replaced on every view transition, so the
+	// references are refreshed per page. These two listeners are not: the module
+	// itself runs once, and re-binding them here would stack a fresh pair on
+	// every navigation.
+	addEventListener('scroll', queue, { passive: true });
+	addEventListener('resize', queue, { passive: true });
+
+	document.addEventListener('astro:page-load', () => {
+		index = document.querySelector<HTMLElement>('.gauge .index');
+		prose = document.querySelector<HTMLElement>('.prose');
+		place();
+	});
+</script>

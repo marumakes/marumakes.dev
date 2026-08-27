@@ -1,91 +1,168 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import { filedLabel, lengthLabel, wordCount } from '../../lib/register';
 
-const entries = (await getCollection('creative')).sort((a, b) => a.data.order - b.data.order);
-const homebrew = entries.filter((e) => e.data.kind === 'class' || e.data.kind === 'monster');
-const articles = entries.filter((e) => e.data.kind === 'article');
+const KINDS = {
+	class: 'Class',
+	monster: 'Monster',
+	article: 'Article',
+} as const;
+
+// Newest first, the same way the homepage stack opens.
+const notes = (await getCollection('creative')).sort((a, b) => b.data.order - a.data.order);
+
+const leaves = notes.map((note) => ({
+	id: note.id,
+	title: note.data.title,
+	summary: note.data.summary,
+	kind: KINDS[note.data.kind],
+	number: note.data.order,
+	filed: filedLabel(note.data.filed),
+	length: lengthLabel(wordCount(note.body ?? '')),
+}));
 ---
 
-<BaseLayout title="Creative — maru" description="Homebrew D&D content and articles, separate from the software projects.">
-	<div class="wrap creative">
-		<a class="back" href="/">← maru</a>
-		<h1>Creative</h1>
-		<p class="dek">
-			The other thing I build. Homebrew D&amp;D content, and a couple of articles — some
-			about running games, some just because I like the lore.
-		</p>
+<BaseLayout
+	title="The Notebook — Marumakes"
+	description="Every field note: homebrew classes and monsters, and writing about running a table."
+>
+	{/* The archive: the same notes as the homepage stack, laid flat and
+	    numbered, with none of the stack's furniture. */}
+	<div class="notebook">
+		<a class="back" href="/">← Marumakes</a>
 
-		<h2>Homebrew</h2>
-		<ul class="entry-list">
+		<header class="lede">
+			<h1>The Notebook</h1>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+				incididunt ut labore et dolore magna aliqua.
+			</p>
+		</header>
+
+		<SectionHead id="all-notes" title="Field Notes" meta={`${leaves.length} notes`} />
+
+		<ol class="leaves">
 			{
-				homebrew.map((entry) => (
+				leaves.map((leaf) => (
 					<li>
-						<a href={`/creative/${entry.id}`}>{entry.data.title}</a>
-						<p>{entry.data.summary}</p>
+						<span class="number">No. {leaf.number}</span>
+						<div class="body">
+							<h2>
+								<a href={`/creative/${leaf.id}`}>{leaf.title}</a>
+							</h2>
+							<p>{leaf.summary}</p>
+						</div>
+						<dl class="card">
+							<div>
+								<dt>Kind</dt>
+								<dd>{leaf.kind}</dd>
+							</div>
+							<div>
+								<dt>Filed</dt>
+								<dd>{leaf.filed}</dd>
+							</div>
+							<div>
+								<dt>Length</dt>
+								<dd>{leaf.length}</dd>
+							</div>
+						</dl>
 					</li>
 				))
 			}
-		</ul>
-
-		<h2>Articles</h2>
-		<ul class="entry-list">
-			{
-				articles.map((entry) => (
-					<li>
-						<a href={`/creative/${entry.id}`}>{entry.data.title}</a>
-						<p>{entry.data.summary}</p>
-					</li>
-				))
-			}
-		</ul>
+		</ol>
 	</div>
 </BaseLayout>
 
 <style>
-	.creative {
-		padding-block: 2rem 5rem;
-		max-width: 42rem;
-	}
+	.notebook { padding-block: clamp(2rem, 6vh, 3.5rem) 2rem; }
+
 	.back {
-		font-size: 0.85rem;
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
 		color: var(--ink-faint);
 		text-decoration: none;
 	}
+
+	.back:hover { color: var(--gold); }
+
+	.lede { margin: 2rem 0 clamp(2.5rem, 7vh, 4rem); }
+
 	h1 {
-		font-size: 2.25rem;
-		margin-top: 1rem;
+		font-family: var(--font-display);
+		font-size: clamp(2.4rem, 5.4vw, 3.8rem);
+		line-height: 1.06;
+		color: var(--ink);
 	}
-	.dek {
-		margin-top: 1rem;
-		color: var(--ink-soft);
-		max-width: 52ch;
-	}
-	h2 {
-		font-size: 1.2rem;
-		margin-top: 2.5rem;
-		margin-bottom: 0.75rem;
-	}
-	.entry-list {
+
+	.lede p { margin-top: 1.3rem; max-width: 52ch; color: var(--ink-soft); }
+
+	.leaves {
 		list-style: none;
-		padding: 0;
 		margin: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
+		padding: 0;
 	}
-	.entry-list li {
-		border: 1px solid var(--hairline);
-		border-radius: 8px;
-		padding: 1rem 1.25rem;
+
+	/* number · body · card — the register's shape, one column lighter. */
+	.leaves li {
+		display: grid;
+		grid-template-columns: 6rem minmax(0, 1fr) minmax(0, 13rem);
+		gap: clamp(1.4rem, 3vw, 3rem);
+		padding-block: clamp(1.8rem, 4vh, 2.6rem);
+		border-top: 1px solid var(--rule);
+		align-items: start;
 	}
-	.entry-list a {
+
+	.leaves li:first-child { border-top: 0; }
+
+	@media (max-width: 900px) {
+		.leaves li { grid-template-columns: 1fr; gap: 1rem; }
+	}
+
+	.number {
+		font-family: var(--font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--gold);
+		font-variant-numeric: tabular-nums;
+	}
+
+	.body h2 {
+		font-family: var(--font-display);
+		font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+		line-height: 1.14;
+		max-width: 22ch;
+		color: var(--ink);
+	}
+
+	.body h2 a {
 		text-decoration: none;
-		font-weight: 600;
+		border-bottom: 1px solid transparent;
 	}
-	.entry-list p {
-		margin-top: 0.35rem;
-		color: var(--ink-soft);
-		font-size: 0.92rem;
+
+	.body h2 a:hover { color: var(--gold); border-bottom-color: var(--gold-mid); }
+
+	.body p { margin-top: 0.7rem; max-width: 56ch; color: var(--ink-soft); }
+
+	.card {
+		display: grid;
+		gap: 0.8rem;
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: 0.63rem;
+		border-left: 1px solid var(--rule);
+		padding-left: clamp(1rem, 2vw, 1.5rem);
 	}
+
+	@media (max-width: 900px) {
+		.card { border-left: 0; padding-left: 0; }
+	}
+
+	.card div { display: grid; gap: 0.12rem; }
+	.card dt { font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+	.card dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
 </style>

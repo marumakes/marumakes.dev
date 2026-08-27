@@ -1,98 +1,55 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingLayout from '../../layouts/ReadingLayout.astro';
+import { conditionLabel, roman, wordCount, type Condition } from '../../lib/register';
 
 export async function getStaticPaths() {
-	const projects = await getCollection('projects');
+	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+
 	// Only projects marked as case studies (currently: Parchment People) get
-	// a page here — the rest link straight out to GitHub from the card.
+	// a page here — the rest link straight out to their repository from the
+	// register. The plate number is the project's position in the whole
+	// register, so it is worked out before filtering.
 	return projects
 		.filter((project) => project.data.caseStudy)
 		.map((project) => ({
 			params: { slug: project.id },
-			props: { project },
+			props: { project, plate: roman(projects.indexOf(project) + 1) },
 		}));
 }
 
-const { project } = Astro.props;
+const { project, plate } = Astro.props;
 const { Content } = await render(project);
-const { title, tagline, stack, liveUrl } = project.data;
+const {
+	title, tagline, stack, mounting, finish, firstLight, designation, condition, liveUrl, repoUrl,
+} = project.data;
+
+const spec = [
+	{ term: 'Designation', value: designation },
+	{ term: 'Movement', value: stack.join(' · ') },
+	{ term: 'Mounting', value: mounting },
+	{ term: 'Finish', value: finish },
+	{ term: 'First light', value: String(firstLight) },
+	{ term: 'Condition', value: conditionLabel(condition as Condition) },
+].filter((row): row is { term: string; value: string } => Boolean(row.value));
+
+const links = [
+	liveUrl ? { href: liveUrl, label: liveUrl.replace(/^https?:\/\/(www\.)?/, '') } : null,
+	repoUrl ? { href: repoUrl, label: 'Repository' } : null,
+].filter((link) => link !== null);
 ---
 
-<BaseLayout title={`${title} — maru`} description={tagline}>
-	<article class="wrap case-study">
-		<a class="back" href="/#projects">← Projects</a>
-		<h1>{title}</h1>
-		<p class="tagline">{tagline}</p>
-		{
-			liveUrl && (
-				<a class="live" href={liveUrl} target="_blank" rel="noreferrer">
-					Visit the live site ↗
-				</a>
-			)
-		}
-		<ul class="stack">
-			{stack.map((item) => <li>{item}</li>)}
-		</ul>
-		<div class="body">
-			<Content />
-		</div>
-	</article>
-</BaseLayout>
-
-<style>
-	.case-study {
-		padding-block: 2rem 5rem;
-		max-width: 42rem;
-	}
-	.back {
-		font-size: 0.85rem;
-		color: var(--ink-faint);
-		text-decoration: none;
-	}
-	h1 {
-		font-size: 2rem;
-		margin-top: 1rem;
-	}
-	.tagline {
-		color: var(--ink-soft);
-		font-size: 1.1rem;
-		margin-top: 0.75rem;
-	}
-	.live {
-		display: inline-block;
-		margin-top: 1rem;
-		color: var(--accent);
-		font-size: 0.95rem;
-	}
-	.stack {
-		list-style: none;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-		padding: 0;
-		margin-top: 1.25rem;
-	}
-	.stack li {
-		font-family: var(--font-mono);
-		font-size: 0.72rem;
-		background: var(--surface-2);
-		border: 1px solid var(--hairline);
-		border-radius: 4px;
-		padding: 0.15rem 0.45rem;
-		color: var(--ink-soft);
-	}
-	.body {
-		margin-top: 2.5rem;
-		line-height: 1.7;
-	}
-	.body :global(h2) {
-		font-size: 1.3rem;
-		margin-top: 2.25rem;
-		margin-bottom: 0.75rem;
-	}
-	.body :global(p) {
-		margin-bottom: 1rem;
-		color: var(--ink-soft);
-	}
-</style>
+<ReadingLayout
+	title={`${title} — Marumakes`}
+	description={tagline}
+	eyebrow={`Plate ${plate} · ${designation}`}
+	heading={title}
+	standfirst={tagline}
+	back={{ href: '/#register', label: 'The Register' }}
+	spec={spec}
+	seed={project.id}
+	words={wordCount(project.body ?? '')}
+	links={links}
+>
+	<Content />
+</ReadingLayout>

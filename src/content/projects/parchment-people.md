@@ -1,34 +1,39 @@
 ---
 title: Parchment People
 tagline: A D&D 5e character sheet built for the table — cloud-synced, keyboard-friendly, and designed to stay out of your way mid-session.
-stack: [React 19, TypeScript, Vite, Supabase, Tailwind CSS, TipTap, Vercel]
+stack: [React 19, TypeScript, Vite, TipTap]
+mounting: Supabase · Vercel
+finish: Tailwind CSS
+firstLight: 2025  # TODO: confirm — placeholder
+designation: Chartula
+condition: in-service  # TODO: confirm — placeholder
+screenshot: /projects/parchment-people/screenshot.png
+screenshotAlt: A Parchment People character sheet open on the Core tab, showing ability scores, skills, saving throws and proficiencies
 liveUrl: https://www.parchmentpeople.com
 caseStudy: true
 order: 1
 ---
 
-## What it does
+## Lorem ipsum dolor
 
-Seven tabs cover a full character sheet — ability scores, skills and saving throws on **Core**; HP, conditions, death saves and attacks on **Combat**; full SRD spell search on **Spells**; encumbrance and attunement on **Inventory**; pets and summons with their own stat blocks on **Companions**; backstory and portrait on **Background**; and a freeform **Notes** pad for the middle of a session.
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
 
-A guided level-up wizard walks a character from level N to N+1 — class, hit points, ability scores or a feat, spell slots, new features — and applies the change as a single patch rather than a dozen small edits. Proficiencies and starting equipment are suggested from class, race and background, offered as chips to accept or ignore rather than applied silently.
+Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
 
-Parties are real-time: a DM creates a group, shares an invite code, and reads party members' sheets as they update live. Players choose what to share; DMs keep private per-member notes.
+Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.
 
-Autosave runs on a 2-second debounce, backed by in-session undo, persisted version history with restore, and a save-conflict guard for the same character open in two tabs at once.
+## Consectetur adipiscing elit
 
-## Why it's a case study and not a repo link
+Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.
 
-Parchment People has real users with real accounts, characters, and campaign notes, so the source isn't public. This page is the substitute for a README — the engineering decisions below are the ones that would otherwise live there.
+## Sed do eiusmod tempora
 
-## A few decisions worth mentioning
+**Lorem ipsum dolor sit amet.** At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi.
 
-**Backups are a script, not a platform feature.** The project runs on Supabase's free tier, which takes no automatic backups. A scheduled `pg_dump`-based script fills that gap, writing `schema.sql`, an allowlisted `data-auth.sql` (just `auth.users` and `auth.identities` — not Supabase's internal bookkeeping), and `data.sql` for the app's own tables. It keeps the last 14 runs and prunes anything older than 90 days, which is also the literal mechanism behind the privacy policy's claim that deleted data doesn't survive more than 90 days in backups.
+**Consectetur adipiscing elit sed.** Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus.
 
-**Source maps are gated by the same variable that authenticates their upload.** `SENTRY_AUTH_TOKEN` is build-time only, set in Vercel, never shipped to the browser. Without it, the build emits no source maps at all — deliberately, since the Sentry plugin is what deletes them *after* upload, and generating them with nothing there to delete them would leave readable source sitting in `dist/`.
+**Tempor incididunt ut labore.** Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
 
-**Row-level security is the actual access model**, not an afterthought bolted onto an existing schema. Groups/parties in particular carry security-definer RLS helpers and a column-level `UPDATE` grant, which is why the schema lives entirely in versioned migrations rather than being hand-edited — a simplified rewrite would silently drop the column-level grant and quietly widen what a party member can touch.
+## Ut labore et dolore
 
-## Stack
-
-React 19 + TypeScript + Vite, routed with React Router, state via React Context. Supabase for Postgres, auth (Google OAuth), storage and realtime. Deno edge functions handle account deletion. Tailwind CSS v4 with shadcn/ui components, TipTap for rich text, `@react-pdf/renderer` for PDF export. Sentry for error tracking (session replay deliberately never enabled), Umami for cookieless analytics. Hosted on Vercel.
+Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.

@@ -1,36 +1,53 @@
-/* Design tokens. Everything below reads from these — change a value here
-   and it updates everywhere, in both color schemes, in one place. */
+/* ============================================================
+   marumakes — design tokens
+
+   The governing fiction is the workshop of an instrument maker:
+   iron-gall ink and gold on parchment. See design/DESIGN.md.
+
+   This file holds tokens and resets only. Components style
+   themselves in their own scoped <style> blocks.
+   ============================================================ */
+
 :root {
-	--bg: #faf9f6;
-	--surface: #ffffff;
-	--surface-2: #f0eee7;
-	--ink: #17181c;
-	--ink-soft: #5a5d66;
-	--ink-faint: #8c8f97;
-	--hairline: #e3e0d8;
-	--accent: #2a3e63;
-	--accent-soft: #e4e8f0;
+	/* --- colour ---------------------------------------------
+	   Gold is the voice. Mauveine is the reading. Iron is the text.
+	   Gold carries labels, rules and links; mauveine appears only
+	   where something is plotted or measured. Ratios are against
+	   --paper — anything used for text must clear 4.5:1. */
+	--paper: #ece7d9;
+	--paper-2: #f4f1e7;
+	--ink: #171512;        /* 14.75:1 */
+	--ink-soft: #554f45;   /*  6.56:1 */
+	--ink-faint: #6f6759;  /*  4.52:1 — the floor for metadata text */
+	--rule: #cfc6b0;
+	--rule-soft: #ded6c4;
+	--gold: #7c5f24;       /*  4.83:1 — labels, links, numerals */
+	--gold-mid: #977a36;   /*  3.30:1 — rules and graduations, never text */
+	--mauve: #5a3f8c;      /*  6.73:1 — plotted data only */
+	--mauve-soft: #9683c2;
 
-	--font-display: ui-serif, Georgia, "Iowan Old Style", "Palatino Linotype", serif;
-	--font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-	--font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+	/* Decorative linework is exempt from contrast minimums, so it keeps
+	   the lighter values the drawings were tuned against. */
+	--line-faint: rgba(143, 111, 44, 0.07);
+	--line-ghost: rgba(143, 111, 44, 0.2);
 
-	--max-width: 68rem;
-}
+	/* --- type ------------------------------------------------
+	   Display is Bodoni, reading is Spectral, labels are mono.
+	   Mono never appears above ~0.7rem: at display size it stops
+	   reading as an engraved label and starts reading as a terminal. */
+	--font-display: "Bodoni Moda", Didot, "Bodoni MT", Georgia, serif;
+	--font-body: Spectral, Georgia, "Iowan Old Style", serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-/* The OS/browser's own dark-mode preference — no toggle needed for v1. */
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg: #131317;
-		--surface: #1b1a1f;
-		--surface-2: #232228;
-		--ink: #ece9e2;
-		--ink-soft: #a9a6a0;
-		--ink-faint: #74727a;
-		--hairline: #322f37;
-		--accent: #8ba1d9;
-		--accent-soft: #202942;
-	}
+	/* --- layout ----------------------------------------------
+	   Full-bleed. There is no centred max-width container; horizontal
+	   space is held by the gutter and each column caps its own measure. */
+	--gut: clamp(1.5rem, 5vw, 5rem);
+
+	/* The reading column on an article or case study, and the space between it
+	   and the index card sitting out in the gutter beside it. */
+	--reading: 44rem;
+	--card-gap: clamp(1.5rem, 3vw, 2.75rem);
 }
 
 * {
@@ -38,22 +55,44 @@
 }
 
 html {
-	color-scheme: light dark;
+	color-scheme: light;
+
+	/* Belt and braces with the font request in BaseLayout: even if a browser
+	   has a variable Bodoni cached, don't let it thin the display cut out at
+	   hero sizes. */
+	font-optical-sizing: none;
+}
+
+/* Squared paper, faint enough to read as a watermark rather than a grid.
+
+   This lives on the root element rather than in a positioned layer of its own.
+   The root's background is painted across the whole canvas — the full
+   scrollable area, not the viewport — so the ruling reaches the bottom of any
+   page automatically and can't be clipped or out-stacked by anything. An
+   absolutely positioned layer sized itself to the viewport and stopped at the
+   first fold; a fixed one stopped painting altogether. */
+html {
+	background-color: var(--paper);
+	background-image:
+		linear-gradient(var(--line-faint) 1px, transparent 1px),
+		linear-gradient(90deg, var(--line-faint) 1px, transparent 1px);
+	background-size: 56px 56px, 56px 56px;
 }
 
 body {
 	margin: 0;
-	background: var(--bg);
+	/* Must stay transparent: a background here would cover the ruling above. */
+	background: transparent;
 	color: var(--ink);
 	font-family: var(--font-body);
-	font-size: 1rem;
-	line-height: 1.6;
+	font-size: 17px;
+	line-height: 1.68;
 	-webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
 	font-family: var(--font-display);
-	font-weight: 500;
+	font-weight: 400;
 	line-height: 1.15;
 	text-wrap: balance;
 	margin: 0;
@@ -69,7 +108,7 @@ a {
 
 a:focus-visible,
 button:focus-visible {
-	outline: 2px solid var(--accent);
+	outline: 1px solid var(--gold);
 	outline-offset: 2px;
 }
 
@@ -78,8 +117,35 @@ img, svg {
 	display: block;
 }
 
-.wrap {
-	max-width: var(--max-width);
-	margin-inline: auto;
-	padding-inline: 1.5rem;
+/* Every mechanism on the page turns at its own rate: the wheel carries
+   its period as --spin, the class supplies the rest. */
+@keyframes turn {
+	to { transform: rotate(360deg); }
+}
+
+.turning {
+	animation: turn var(--spin, 120s) linear infinite;
+	transform-box: fill-box;
+	transform-origin: center;
+}
+
+.turning.widdershins {
+	animation-direction: reverse;
+}
+
+/* One switch for the whole site. The drawings are still drawn — they
+   just stop moving.
+
+   Elements marked [data-scroll-driven] are exempt: their "animation" is a
+   direct mapping from scroll position, which moves only because the reader
+   moved. Clamping its duration would freeze the indicator at zero and make it
+   report a falsehood rather than simply hold still. */
+@media (prefers-reduced-motion: reduce) {
+	*:not([data-scroll-driven]),
+	*:not([data-scroll-driven])::before,
+	*:not([data-scroll-driven])::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
 }
