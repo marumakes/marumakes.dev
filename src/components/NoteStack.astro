@@ -37,7 +37,7 @@ const leaves = notes.map((note) => ({
 ---
 
 <section class="notes" aria-labelledby="field-notes">
-	<SectionHead id="field-notes" title="Field Notes" meta="The whole notebook →" metaHref="/creative" />
+	<SectionHead id="field-notes" title="Field Notes" meta="The whole notebook →" metaHref="/field-notes" />
 
 	<div class="stack" id="note-stack">
 		<div class="pages">
@@ -52,7 +52,7 @@ const leaves = notes.map((note) => ({
 						<div>
 							<h3>{leaf.title}</h3>
 							<p class="summary">{leaf.summary}</p>
-							<a class="read" href={`/creative/${leaf.id}`}>
+							<a class="read" href={`/field-notes/${leaf.id}`}>
 								Read the note →
 							</a>
 						</div>

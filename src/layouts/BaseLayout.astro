@@ -25,6 +25,11 @@ const FONTS =
 	'&family=IBM+Plex+Mono:wght@400;500' +
 	'&family=Spectral:ital,wght@0,300;0,400;0,500;1,400' +
 	'&display=swap';
+
+// This page's one true address, resolved against `site` in astro.config.mjs.
+// The path carries a trailing slash on every page but the front one, because
+// Astro emits each route as its own directory.
+const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <html lang="en">
@@ -34,6 +39,8 @@ const FONTS =
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="canonical" href={canonical} />
+		<meta property="og:url" content={canonical} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link rel="stylesheet" href={FONTS} />
