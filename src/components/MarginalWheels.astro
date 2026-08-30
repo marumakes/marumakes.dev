@@ -2,7 +2,7 @@
 import { marginalArrangement, marginalWheel, type Side } from '../lib/mechanism';
 
 interface Props {
-	/** Anything stable about the page — its slug. Fixes the arrangement so it
+	/** Anything stable about the page - its slug. Fixes the arrangement so it
 	    is the same on every build, and different from the next page's. */
 	seed: string;
 	/** Length of the piece, so short drafts don't get furniture they can't carry. */
@@ -32,7 +32,7 @@ const wheels = marginalArrangement(seed, words).filter((wheel) => wheel.side ===
 
 <style>
 	/* Drawn at its own size, which may be wider than the margin holding it. A
-	   wheel that overruns is cut off by the edge of the window — deliberately,
+	   wheel that overruns is cut off by the edge of the window - deliberately,
 	   because drawings that all sit inside their column read as placed rather
 	   than scattered.
 
@@ -41,7 +41,7 @@ const wheels = marginalArrangement(seed, words).filter((wheel) => wheel.side ===
 	   right margin's by their left. That is what guarantees an overrun can only
 	   ever leave the page, and never reach the text, the gauge or the card. The
 	   anchor is an inset from this parent, not a sum worked out from the page
-	   dimensions — duplicating the grid's arithmetic is what once drew a wheel
+	   dimensions - duplicating the grid's arithmetic is what once drew a wheel
 	   straight across the text. */
 	.cog {
 		position: absolute;

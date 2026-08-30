@@ -7,7 +7,7 @@ export async function getStaticPaths() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 
 	// Only projects marked as case studies (currently: Parchment People) get
-	// a page here — the rest link straight out to their repository from the
+	// a page here - the rest link straight out to their repository from the
 	// register. The plate number is the project's position in the whole
 	// register, so it is worked out before filtering.
 	return projects
@@ -40,7 +40,7 @@ const links = [
 ---
 
 <ReadingLayout
-	title={`${title} — Marumakes`}
+	title={`${title} - Marumakes`}
 	description={tagline}
 	eyebrow={`Plate ${plate} · ${designation}`}
 	heading={title}

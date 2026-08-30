@@ -11,14 +11,14 @@ interface SpecRow {
 interface Props {
 	title: string;
 	description: string;
-	/** Where this page sits — "Plate II" for a case study, "No. 3" for a note. */
+	/** Where this page sits - "Plate II" for a case study, "No. 3" for a note. */
 	eyebrow: string;
 	heading: string;
 	standfirst: string;
 	back: { href: string; label: string };
 	spec: SpecRow[];
 	links?: { href: string; label: string }[];
-	/** Fixes this page's marginal wheels — pass the entry's slug. */
+	/** Fixes this page's marginal wheels - pass the entry's slug. */
 	seed: string;
 	/** Length of the piece, so short drafts don't get furniture they can't carry. */
 	words: number;
@@ -31,7 +31,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 <BaseLayout title={title} description={description}>
 	{/* Ornament thins out as you move inward: a document, not a poster. Two
 	    ghosted wheels out in the gutters, and otherwise a single centred
-	    column — title, standfirst and text all on one measure. */}
+	    column - title, standfirst and text all on one measure. */}
 	<article class="document">
 		<a class="back" href={back.href}>← {back.label}</a>
 
@@ -82,7 +82,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 <style>
 	/* One centred text column, with a gutter either side. The card lives in
 	   the right gutter, so the text is centred on the page rather than the
-	   text-plus-card block being centred — which is what left the title
+	   text-plus-card block being centred - which is what left the title
 	   looking wider than the prose beneath it.
 
 	   `position: relative` anchors the marginal wheels. */
@@ -107,8 +107,8 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 	.prose { grid-column: measure; }
 
 	/* Each gutter is a grid of its own: drawings get one track, and the
-	   furniture beside them — the gauge on the left, the index card on the
-	   right — gets another. Splitting them is what stops a wheel growing into
+	   furniture beside them - the gauge on the left, the index card on the
+	   right - gets another. Splitting them is what stops a wheel growing into
 	   the gauge, and it means neither has to work out the other's width. */
 	.margin {
 		grid-row: 3;
@@ -236,7 +236,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 	}
 
 	/* Once the gutters are too narrow to hold it, the card comes back into the
-	   column and sits under the title — still before the text, so it reads as
+	   column and sits under the title - still before the text, so it reads as
 	   a catalogue entry rather than a footnote. */
 	@media (max-width: 1240px) {
 		.document { grid-template-columns: minmax(0, var(--reading)); justify-content: center; }
@@ -313,7 +313,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		border-top: 1px solid var(--rule);
 	}
 
-	/* Code is set in the label face at reading size — the one place mono is
+	/* Code is set in the label face at reading size - the one place mono is
 	   allowed past 0.7rem, because it is quoting a machine rather than
 	   labelling an instrument. */
 	.prose :global(code) {
