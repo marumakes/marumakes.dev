@@ -1,12 +1,12 @@
 ---
 title: Ripple Chat
-tagline: A full-stack real-time messaging app — direct and group chat, typing indicators, read/unread tracking — built as a standalone reference implementation.
+tagline: A full-stack real-time messaging app - direct and group chat, typing indicators, read/unread tracking - built as a standalone reference implementation.
 stack: [React 19, TypeScript, Vite]
 mounting: Supabase realtime
 finish: Tailwind CSS
-firstLight: 2025  # TODO: confirm — placeholder
+firstLight: 2025 # TODO: confirm - placeholder
 designation: Unda
-condition: reference  # TODO: confirm — placeholder
+condition: reference # TODO: confirm - placeholder
 screenshot: /projects/ripple-chat/demo.gif
 screenshotAlt: Ripple Chat's messaging interface showing a conversation list and an open chat thread
 repoUrl: https://github.com/marumakes/ripple-chat

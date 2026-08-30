@@ -1,12 +1,12 @@
 ---
 title: Parchment People
-tagline: A D&D 5e character sheet built for the table — cloud-synced, keyboard-friendly, and designed to stay out of your way mid-session.
+tagline: A D&D 5e character sheet built for the table - cloud-synced, beautiful, and automated just enough to keep the game fun. Sheets can be shared across parties.
 stack: [React 19, TypeScript, Vite, TipTap]
 mounting: Supabase · Vercel
 finish: Tailwind CSS
-firstLight: 2025  # TODO: confirm — placeholder
+firstLight: 2025 # TODO: confirm - placeholder
 designation: Chartula
-condition: in-service  # TODO: confirm — placeholder
+condition: in-service
 screenshot: /projects/parchment-people/screenshot.png
 screenshotAlt: A Parchment People character sheet open on the Core tab, showing ability scores, skills, saving throws and proficiencies
 liveUrl: https://www.parchmentpeople.com
