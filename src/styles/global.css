@@ -1,5 +1,5 @@
 /* ============================================================
-   marumakes — design tokens
+   marumakes - design tokens
 
    The governing fiction is the workshop of an instrument maker:
    iron-gall ink and gold on parchment. See design/DESIGN.md.
@@ -9,131 +9,374 @@
    ============================================================ */
 
 :root {
-	/* --- colour ---------------------------------------------
+  /* --- colour ---------------------------------------------
 	   Gold is the voice. Mauveine is the reading. Iron is the text.
 	   Gold carries labels, rules and links; mauveine appears only
 	   where something is plotted or measured. Ratios are against
-	   --paper — anything used for text must clear 4.5:1. */
-	--paper: #ece7d9;
-	--paper-2: #f4f1e7;
-	--ink: #171512;        /* 14.75:1 */
-	--ink-soft: #554f45;   /*  6.56:1 */
-	--ink-faint: #6f6759;  /*  4.52:1 — the floor for metadata text */
-	--rule: #cfc6b0;
-	--rule-soft: #ded6c4;
-	--gold: #7c5f24;       /*  4.83:1 — labels, links, numerals */
-	--gold-mid: #977a36;   /*  3.30:1 — rules and graduations, never text */
-	--mauve: #5a3f8c;      /*  6.73:1 — plotted data only */
-	--mauve-soft: #9683c2;
+	   --paper - anything used for text must clear 4.5:1. */
+  --paper: #ece7d9;
+  --paper-2: #f4f1e7;
+  --ink: #171512; /* 14.75:1 */
+  --ink-soft: #554f45; /*  6.56:1 */
+  --ink-faint: #6f6759; /*  4.52:1 - the floor for metadata text */
+  --rule: #cfc6b0;
+  --rule-soft: #ded6c4;
+  --gold: #7c5f24; /*  4.83:1 - labels, links, numerals */
+  --gold-mid: #977a36; /*  3.30:1 - rules and graduations, never text */
+  --mauve: #5a3f8c; /*  6.73:1 - plotted data only */
+  --mauve-soft: #9683c2;
 
-	/* Decorative linework is exempt from contrast minimums, so it keeps
+  /* Decorative linework is exempt from contrast minimums, so it keeps
 	   the lighter values the drawings were tuned against. */
-	--line-faint: rgba(143, 111, 44, 0.07);
-	--line-ghost: rgba(143, 111, 44, 0.2);
+  --line-faint: rgba(143, 111, 44, 0.07);
+  --line-ghost: rgba(143, 111, 44, 0.2);
 
-	/* --- type ------------------------------------------------
+  /* The note stack's fore-edges, front to back: depth reads as age. The ramp
+	   runs away from the open page, so by day it darkens and by night it lifts.
+	   It is a token per leaf rather than one value inverted. */
+  --leaf-1: #f4f1e7;
+  --leaf-2: #efeade;
+  --leaf-3: #e9e3d5;
+  --leaf-4: #e4ddcd;
+
+  /* Paper depth. By day a leaf casts a shadow onto the one behind it; by night
+	   the stack is lit from the front and the same edges catch light instead. */
+  --shadow-leaf: rgba(28, 25, 21, 0.04);
+  --shadow-leaf-2: rgba(28, 25, 21, 0.03);
+  --shadow-edge: rgba(28, 25, 21, 0.16);
+
+  /* The struck plate of a call to action: inked by day, and see the night
+	   block for why that does not survive a straight inversion. The line is a
+	   token of its own so the night sheet can draw the button as an outline;
+	   by day it takes the ground's value and nothing moves. */
+  --cta-ground: #171512;
+  --cta-line: #171512;
+  --cta-ink: #f4f1e7;
+  --cta-hover: #322c24;
+  --cta-hover-line: #322c24;
+
+  /* The mount behind a project screenshot. White by day: every screenshot is of
+	   a screen, and a tinted ground left a visible seam wherever the image's own
+	   background met the mount. */
+  --plate-window: #fff;
+
+  /* Read by PaperGrain, which paints to a canvas in JS and so cannot use a
+	   var() directly. Fibre speckle in both directions, plus the foxing wash;
+	   the alpha is a token too, because a speck that reads as tooth on
+	   parchment reads as sensor noise on a dark ground. */
+  --grain-light: 255, 252, 242;
+  --grain-dark: 29, 26, 22;
+  --grain-bloom: 140, 106, 54;
+  --grain-alpha: 0.05;
+
+  /* --- type ------------------------------------------------
 	   Display is Bodoni, reading is Spectral, labels are mono.
 	   Mono never appears above ~0.7rem: at display size it stops
 	   reading as an engraved label and starts reading as a terminal. */
-	--font-display: "Bodoni Moda", Didot, "Bodoni MT", Georgia, serif;
-	--font-body: Spectral, Georgia, "Iowan Old Style", serif;
-	--font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: "Bodoni Moda", Didot, "Bodoni MT", Georgia, serif;
+  --font-body: Spectral, Georgia, "Iowan Old Style", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-	/* --- layout ----------------------------------------------
+  /* --- layout ----------------------------------------------
 	   Full-bleed. There is no centred max-width container; horizontal
 	   space is held by the gutter and each column caps its own measure. */
-	--gut: clamp(1.5rem, 5vw, 5rem);
+  --gut: clamp(1.5rem, 5vw, 5rem);
 
-	/* The reading column on an article or case study, and the space between it
+  /* The reading column on an article or case study, and the space between it
 	   and the index card sitting out in the gutter beside it. */
-	--reading: 44rem;
-	--card-gap: clamp(1.5rem, 3vw, 2.75rem);
+  --reading: 44rem;
+  --card-gap: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+/* Pins the UA to the day sheet when a reader has asked for it on a dark OS.
+   It sits up here with the palettes rather than beside `html` below: a rule
+   between that element's two blocks stops them being merged, and the ruling
+   check reads the first `html` rule it finds. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* --- night ---------------------------------------------------
+   Not the day sheet inverted: the sky the instrument is pointed at. Indigo,
+   with the astrolabe in brass on it. See DESIGN.md §2. Nothing but colour
+   changes - roles, layout, type and drawings are the day sheet's.
+
+   Ratios are against --paper-2, the lighter of the two grounds and so the
+   worse case. Three rules govern every value below.
+
+   *The ground is the warm thing, not the marks.* This is the rule the first two
+   cuts of this palette missed, and it is what parchment actually does: --paper
+   is C7.4 where --ink is C2.1, so the material carries the colour and the marks
+   are near-neutral. Both night cuts inverted that - a ground at C1.9 (neutral
+   black, at L4 no warmth is even expressible) under inks at C3.0-4.3 that had
+   moved up to L55-66, where a light tint *shows* its hue where a dark shade
+   hides it. Every line of body copy read gold. The ground is lifted to L8.9
+   here so it can hold real chroma, and the whole ink family sits well beneath
+   it. Ordering within the family is kept - the fainter the mark, the warmer it
+   reads, because a thinner wash lets more of the plate through.
+
+   *One material, one opposing accent.* The day sheet is warm throughout - every
+   token but mauveine has red above blue - because parchment is a warm material
+   with one cool accent. This sheet is the other way up: an indigo night sky with
+   brass on it. Two earlier cuts also came out cool, and were reverted, but they
+   went cool *by accident* - the lightness was inverted and the temperature came
+   with it unnoticed, so the sheet was not one material at all and the brass read
+   as applied rather than native. The difference here is that the ground commits
+   and the ink family follows it, which is what makes the brass legible as the
+   one thing that does not belong to the sky. Ground and inks always agree with
+   the sheet; exactly one named accent may oppose them, and check.py enforces
+   that rather than a fixed direction.
+
+   *Equal contrast is not equal loudness.* A light patch on a dark ground glares
+   where a dark patch on a light one recedes, so every value that is not a text
+   colour matches the *contrast* its daylight counterpart has against parchment,
+   not its alpha or its lightness. --ink and --mauve both land deliberately
+   below their daylight ratios for the same reason: holding --ink's 16:1 against
+   the lifted ground would force pure white, which is the glare this whole
+   discipline exists to prevent.
+
+   Declared twice on purpose. The media query serves a reader on system
+   preference, narrowed so an explicit "day" beats it; the attribute rule
+   serves the masthead toggle and must be able to win in the other direction
+   too. Every value here also exists on bare :root above - nothing may be
+   defined only inside these blocks. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #171926; /* C9.7 h288 - night sky, the most colourful surface here */
+    --paper-2: #212229; /* a 1.09:1 step, against day's 1.09:1 */
+    --ink: #dcdce0; /* 11.59:1, C2.1 - starlight, not paper */
+    --ink-soft: #a0a0a4; /*  6.08:1, C2.2 */
+    --ink-faint: #8a8a8f; /*  4.61:1, C2.9 - the floor for metadata text */
+    --rule: #323239; /* 1.372:1 against the ground, as by day */
+    --rule-soft: #26262e; /* 1.163:1 against the ground, as by day */
+    --gold: #a69272; /*  5.26:1, C19.9 - labels, links, numerals */
+    --gold-mid: #86765a; /*  3.59:1, C17.8 - rules and graduations, never text */
+    --mauve: #9c84bb; /*  4.85:1 - plotted data only */
+    --mauve-soft: #675b85;
+
+    /* The same gold as the day ruling, at the alpha that reproduces its
+	   weight on this ground: 1.07:1 for the faint ruling and 1.25:1 for the
+	   ghost, on both sheets. Solved for weight, never copied as an alpha -
+	   the first night cut carried the day sheet's *ghost* alpha on its faint
+	   ruling and came out at three times the weight. check.py measures it. */
+    --line-faint: rgba(143, 111, 44, 0.08);
+    --line-ghost: rgba(143, 111, 44, 0.213);
+
+    --leaf-1: #212229;
+    --leaf-2: #26272e;
+    --leaf-3: #2b2b34;
+    --leaf-4: #2f2f38;
+
+    --shadow-leaf: rgba(220, 220, 224, 0.05);
+    --shadow-leaf-2: rgba(220, 220, 224, 0.035);
+    --shadow-edge: rgba(220, 220, 224, 0.09);
+
+    /* Not an inversion, and not a slab either. By day the call to action is the
+	   darkest thing on the sheet and recedes into it; inverted it becomes a
+	   near-white block, and struck in solid brass it was still the loudest
+	   object on the page - the one large flat colour area in a design that has
+	   none anywhere else. It is drawn as an outline instead: brass rule, brass
+	   text, the sheet's own ground behind it. Gold is the voice, and this is
+	   the page asking for something. */
+    --cta-ground: transparent;
+    --cta-line: #86765a;
+    --cta-ink: #a69272;
+    --cta-hover: #212229;
+    --cta-hover-line: #a69272;
+
+    /* Dimmed from the day sheet's white. A screenshot is of a lit screen, so
+	   the mount stays bright enough to read as glass - but at #fff it measured
+	   17.5:1 against this ground and outshone every mark on the page. */
+    --plate-window: #c6c6cc;
+
+    /* Stronger than the 0.022 an earlier cut used: at that weight the ground
+	   stopped reading as a material at all. The light fleck follows --ink-soft
+	   rather than white so it does not sparkle - it was left at the old brass
+	   through one repaint, and a gold speckle over the whole page was part of
+	   why the ground itself read warm.
+
+	   The bloom is indigo here, not the day sheet's gold. Foxing is warm on
+	   parchment because that is what age does to paper; a warm wash over this
+	   ground is just the brown we took out, spread thin. */
+    --grain-light: 160, 160, 164;
+    --grain-dark: 8, 8, 14;
+    --grain-bloom: 88, 92, 128;
+    --grain-alpha: 0.035;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #171926;
+  --paper-2: #212229;
+  --ink: #dcdce0;
+  --ink-soft: #a0a0a4;
+  --ink-faint: #8a8a8f;
+  --rule: #323239;
+  --rule-soft: #26262e;
+  --gold: #a69272;
+  --gold-mid: #86765a;
+  --mauve: #9c84bb;
+  --mauve-soft: #675b85;
+
+  --line-faint: rgba(143, 111, 44, 0.08);
+  --line-ghost: rgba(143, 111, 44, 0.213);
+
+  --leaf-1: #212229;
+  --leaf-2: #26272e;
+  --leaf-3: #2b2b34;
+  --leaf-4: #2f2f38;
+
+  --shadow-leaf: rgba(220, 220, 224, 0.05);
+  --shadow-leaf-2: rgba(220, 220, 224, 0.035);
+  --shadow-edge: rgba(220, 220, 224, 0.09);
+
+  --cta-ground: transparent;
+  --cta-line: #86765a;
+  --cta-ink: #a69272;
+  --cta-hover: #212229;
+  --cta-hover-line: #a69272;
+
+  --plate-window: #c6c6cc;
+
+  --grain-light: 160, 160, 164;
+  --grain-dark: 8, 8, 14;
+  --grain-bloom: 88, 92, 128;
+  --grain-alpha: 0.035;
 }
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html {
-	color-scheme: light;
+  /* Both themes are real, so the UA is told both; the attribute pins it once
+	   a reader has chosen, so scrollbars and form controls follow the page. */
+  color-scheme: light dark;
 
-	/* Belt and braces with the font request in BaseLayout: even if a browser
+  /* Belt and braces with the font request in BaseLayout: even if a browser
 	   has a variable Bodoni cached, don't let it thin the display cut out at
 	   hero sizes. */
-	font-optical-sizing: none;
+  font-optical-sizing: none;
 }
 
 /* Squared paper, faint enough to read as a watermark rather than a grid.
 
    This lives on the root element rather than in a positioned layer of its own.
-   The root's background is painted across the whole canvas — the full
-   scrollable area, not the viewport — so the ruling reaches the bottom of any
+   The root's background is painted across the whole canvas - the full
+   scrollable area, not the viewport - so the ruling reaches the bottom of any
    page automatically and can't be clipped or out-stacked by anything. An
    absolutely positioned layer sized itself to the viewport and stopped at the
    first fold; a fixed one stopped painting altogether. */
 html {
-	background-color: var(--paper);
-	background-image:
-		linear-gradient(var(--line-faint) 1px, transparent 1px),
-		linear-gradient(90deg, var(--line-faint) 1px, transparent 1px);
-	background-size: 56px 56px, 56px 56px;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--line-faint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-faint) 1px, transparent 1px);
+  background-size:
+    56px 56px,
+    56px 56px;
 }
 
 body {
-	margin: 0;
-	/* Must stay transparent: a background here would cover the ruling above. */
-	background: transparent;
-	color: var(--ink);
-	font-family: var(--font-body);
-	font-size: 17px;
-	line-height: 1.68;
-	-webkit-font-smoothing: antialiased;
+  margin: 0;
+  /* Must stay transparent: a background here would cover the ruling above. */
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4 {
-	font-family: var(--font-display);
-	font-weight: 400;
-	line-height: 1.15;
-	text-wrap: balance;
-	margin: 0;
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.15;
+  text-wrap: balance;
+  margin: 0;
 }
 
 p {
-	margin: 0;
+  margin: 0;
 }
 
 a {
-	color: inherit;
+  color: inherit;
 }
 
 a:focus-visible,
 button:focus-visible {
-	outline: 1px solid var(--gold);
-	outline-offset: 2px;
+  outline: 1px solid var(--gold);
+  outline-offset: 2px;
 }
 
-img, svg {
-	max-width: 100%;
-	display: block;
+img,
+svg {
+  max-width: 100%;
+  display: block;
 }
 
 /* Every mechanism on the page turns at its own rate: the wheel carries
    its period as --spin, the class supplies the rest. */
 @keyframes turn {
-	to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .turning {
-	animation: turn var(--spin, 120s) linear infinite;
-	transform-box: fill-box;
-	transform-origin: center;
+  animation: turn var(--spin, 120s) linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .turning.widdershins {
-	animation-direction: reverse;
+  animation-direction: reverse;
 }
 
-/* One switch for the whole site. The drawings are still drawn — they
+/* The sheet changes all at once, as one image.
+
+   Flipping a full-bleed page between L92 and L4 with no transition is a hard
+   luminance jolt, so the swap cross-fades - but *every surface at once*, from a
+   snapshot, never as a few dozen individual colour properties easing at their
+   own rates. That last version is what looks cheap: elements arrive at
+   different moments and the hover transitions tangle with the swap. The script
+   in Masthead.astro drives this with startViewTransition; here we only set how
+   long it takes.
+
+   The fade is a little slower than a UI transition on purpose. It should read
+   as the light in a room changing rather than as a control being flipped.
+
+   Scoped to [data-sheet-fade], which the toggle sets for exactly as long as the
+   swap runs. The client router takes a view transition on every navigation too,
+   and an unscoped rule here would stretch all of those to 350ms as well. */
+:root[data-sheet-fade]::view-transition-old(root),
+:root[data-sheet-fade]::view-transition-new(root) {
+  animation-duration: 350ms;
+}
+
+/* Four elements carry a hover transition on a colour property - the fore-edges,
+   the register plates and both Correspondence links. Without this they would
+   ease over 0.25-0.3s across the swap, which reads as a glitch rather than as a
+   choice. The attribute is set for the single frame the swap takes and removed
+   immediately after.
+
+   This is redundant while a view transition is running, since the snapshot
+   covers the live DOM for the whole 350ms. It is kept because the other two
+   paths have no snapshot: a browser without startViewTransition, and a reader
+   who has asked for reduced motion. Both swap instantly, and both need this. */
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition: none !important;
+}
+
+/* One switch for the whole site. The drawings are still drawn - they
    just stop moving.
 
    Elements marked [data-scroll-driven] are exempt: their "animation" is a
@@ -141,11 +384,11 @@ img, svg {
    moved. Clamping its duration would freeze the indicator at zero and make it
    report a falsehood rather than simply hold still. */
 @media (prefers-reduced-motion: reduce) {
-	*:not([data-scroll-driven]),
-	*:not([data-scroll-driven])::before,
-	*:not([data-scroll-driven])::after {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
-	}
+  *:not([data-scroll-driven]),
+  *:not([data-scroll-driven])::before,
+  *:not([data-scroll-driven])::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

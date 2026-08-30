@@ -4,7 +4,7 @@ import type { Motion } from '../lib/astrolabe';
 
 /* The opening plate: lede on the left, instrument facing it on the right, an
    engraved caption beneath. The front page and the 404 are the same plate with
-   different words — and on the 404, an instrument that has stopped. Both take
+   different words - and on the 404, an instrument that has stopped. Both take
    their layout from here, so neither can drift from the other. */
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 	/** One filled link and however many quiet ones. */
 	links: { href: string; label: string; emphasis: 'filled' | 'quiet' }[];
 	/** The caption engraved under the drawing. Every part of it has to be true
-	    of the drawing itself — see design/DESIGN.md §6. */
+	    of the drawing itself - see design/DESIGN.md §6. */
 	spec: string[];
 	motion?: Motion;
 }
@@ -102,15 +102,19 @@ const { eyebrow, heading, headingTail, dek, links, spec, motion } = Astro.props;
 		text-transform: uppercase;
 	}
 
+	/* A struck plate by day, an outline by night - see the night block in
+	   global.css for why a filled slab does not survive the swap. The line is
+	   its own token so both are expressible; by day it takes the ground's value
+	   and the button is exactly as it was. */
 	.cta a {
-		color: var(--paper-2);
-		background: var(--ink);
+		color: var(--cta-ink);
+		background: var(--cta-ground);
 		text-decoration: none;
 		padding: 0.7rem 1.4rem;
-		border: 1px solid var(--ink);
+		border: 1px solid var(--cta-line);
 	}
 
-	.cta a:hover { background: #322c24; border-color: #322c24; }
+	.cta a:hover { background: var(--cta-hover); border-color: var(--cta-hover-line); }
 
 	.cta a.quiet {
 		color: var(--ink);

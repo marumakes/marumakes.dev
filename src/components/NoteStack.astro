@@ -9,9 +9,10 @@ interface Props {
 
 const { notes } = Astro.props;
 
-// How much darker each leaf sits in the stack. The newest note is at the
-// front, so depth reads as age.
-const LEAF_SHADES = ['#f4f1e7', '#efeade', '#e9e3d5', '#e4ddcd'];
+// How much deeper each leaf sits in the stack. The newest note is at the
+// front, so depth reads as age. The ramp is per theme - it darkens on the day
+// sheet and lifts on the night one - so these are token names, not values.
+const LEAF_SHADES = ['var(--leaf-1)', 'var(--leaf-2)', 'var(--leaf-3)', 'var(--leaf-4)'];
 
 /** The name the browser morphs the fore-edge into the opened page under. */
 const PAGE_MORPH = 'note-page';
@@ -112,7 +113,7 @@ const leaves = notes.map((note) => ({
 		.stack { grid-template-columns: 1fr; }
 	}
 
-	/* The open leaf: the writing on the left, its index card on the right —
+	/* The open leaf: the writing on the left, its index card on the right -
 	   the same right-hand mono column the register entries end with. */
 	.page {
 		border: 1px solid var(--rule);
@@ -123,7 +124,7 @@ const leaves = notes.map((note) => ({
 		gap: clamp(1.5rem, 4vw, 3.5rem);
 		align-items: start;
 		height: 100%;
-		box-shadow: 2px 0 0 rgba(28, 25, 21, 0.04), 4px 0 0 rgba(28, 25, 21, 0.03);
+		box-shadow: 2px 0 0 var(--shadow-leaf), 4px 0 0 var(--shadow-leaf-2);
 	}
 
 	.page[hidden] { display: none; }
@@ -132,7 +133,7 @@ const leaves = notes.map((note) => ({
 		.page { grid-template-columns: 1fr; gap: 1.6rem; }
 	}
 
-	/* The title carries the page — no pulled quote, no hook, and no rule above
+	/* The title carries the page - no pulled quote, no hook, and no rule above
 	   it either. The section head's own gold rule is the only divider the
 	   notes need; a second one directly beneath it just crowded the title. */
 	.page h3 {
@@ -198,7 +199,7 @@ const leaves = notes.map((note) => ({
 		padding: 1.4rem 0;
 		cursor: pointer;
 		font-variant-numeric: tabular-nums;
-		box-shadow: inset 2px 0 3px -2px rgba(28, 25, 21, 0.16);
+		box-shadow: inset 2px 0 3px -2px var(--shadow-edge);
 		transition: transform 0.25s ease, color 0.25s ease;
 
 		/* Each leaf sits a little deeper than the one in front of it. These
@@ -211,7 +212,7 @@ const leaves = notes.map((note) => ({
 	.edge[hidden] { display: none; }
 
 	/* Overlap by a hairline so the leaves share an edge instead of floating
-	   apart — and only against a leaf that is actually on screen. */
+	   apart - and only against a leaf that is actually on screen. */
 	.edge:not([hidden]) + .edge { margin-left: -1px; }
 
 	.edge:hover,
@@ -232,7 +233,7 @@ const leaves = notes.map((note) => ({
 </style>
 
 <script>
-	/* The whole stack is in the HTML — the script only changes which leaf is
+	/* The whole stack is in the HTML - the script only changes which leaf is
 	   open, so the section works with JavaScript off and every note's text is
 	   there for crawlers.
 

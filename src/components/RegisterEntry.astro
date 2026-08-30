@@ -5,7 +5,7 @@ import { conditionLabel, roman, type Condition } from '../lib/register';
 
 interface Props {
 	project: CollectionEntry<'projects'>;
-	/** Position in the register, from 1 — this is the plate number. */
+	/** Position in the register, from 1 - this is the plate number. */
 	position: number;
 }
 
@@ -17,7 +17,7 @@ const {
 
 const plate = roman(position);
 
-// Movement, Mounting, Finish — the spec column, in that order. A project with
+// Movement, Mounting, Finish - the spec column, in that order. A project with
 // nothing to mount simply doesn't get the row.
 const spec = [
 	{ term: 'Movement', value: stack.join(' · ') },
@@ -154,23 +154,31 @@ const links = [
 
 	.plate {
 		border: 1px solid var(--rule);
-		background: rgba(244, 241, 231, 0.55);
+		background: color-mix(in srgb, var(--paper-2) 55%, transparent);
 		padding: 0.7rem;
 		transition: border-color 0.3s ease;
 	}
 
 	.entry:hover .plate { border-color: var(--gold-mid); }
 
-	/* A mounted window, 16:10. Screenshots are contained, never cropped —
+	/* A mounted window, 16:10. Screenshots are contained, never cropped -
 	   their own aspect ratios run from 1.30 to 1.78.
 
-	   The ground is white, not parchment. Every screenshot is of a screen, and
-	   screens are lit — sitting one on a tinted ground left a visible seam
+	   The ground is white by day, not parchment. Every screenshot is of a screen,
+	   and screens are lit - sitting one on a tinted ground left a visible seam
 	   wherever the image's own background met the mount. White reads as the
-	   glass the interface is behind, and the letterbox disappears into it. */
+	   glass the interface is behind, and the letterbox disappears into it.
+
+	   It is dimmed on the night sheet rather than carried across. White measured
+	   17.5:1 against that ground and was the brightest object on the page by
+	   some distance - a large flat area louder than any text, which is the exact
+	   failure the night discipline exists to prevent. The dimmed mount still
+	   reads as glass at 10.4:1. Only the letterbox bands show it: every project
+	   carries a photo in the deployed site, so the window is normally covered
+	   and the seam has little left to give away. */
 	.window {
 		aspect-ratio: 16 / 10;
-		background: #fff;
+		background: var(--plate-window);
 		border: 1px solid var(--rule-soft);
 		display: grid;
 		place-items: center;

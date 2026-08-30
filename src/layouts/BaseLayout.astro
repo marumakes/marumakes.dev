@@ -16,7 +16,7 @@ const { title, description } = Astro.props;
 //
 // Bodoni Moda is requested *without* its optical-size axis on purpose. With
 // `opsz` in the request the browser sizes it automatically, and at hero size
-// picks the display cut — whose hairlines are so fine the headings look faded.
+// picks the display cut - whose hairlines are so fine the headings look faded.
 // Omitting the axis serves the text cut at every size, which is the weight the
 // design was signed off at.
 const FONTS =
@@ -46,6 +46,43 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 		<link rel="stylesheet" href={FONTS} />
 		<title>{title}</title>
 		<ClientRouter />
+		{/* Render-blocking on purpose, and inline so it cannot arrive late: it
+		    runs before the first paint and there is no flash of the day sheet.
+
+		    No stored choice means no attribute, which leaves the reader on
+		    prefers-color-scheme. That is also what a reader with JavaScript off
+		    gets, so the site is themed either way - only the toggle needs JS. */}
+		<script is:inline>
+			(() => {
+				const KEY = 'marumakes-theme';
+
+				function apply() {
+					const stored = localStorage.getItem(KEY);
+
+					if (stored === 'light' || stored === 'dark') {
+						document.documentElement.dataset.theme = stored;
+						return;
+					}
+
+					delete document.documentElement.dataset.theme;
+				}
+
+				apply();
+
+				// The client router copies <html>'s attributes from the incoming
+				// document, which drops data-theme on every navigation. after-swap
+				// fires before the new page is painted; page-load fires after it,
+				// and would flash the day sheet each time.
+				//
+				// document survives a swap, so one listener covers every later
+				// navigation - and the flag stops a second one being added if the
+				// router chooses to re-run this script.
+				if (!window.__themeBound) {
+					window.__themeBound = true;
+					document.addEventListener('astro:after-swap', apply);
+				}
+			})();
+		</script>
 	</head>
 	<body>
 		<PaperGrain />
@@ -62,7 +99,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 <style>
 	body {
 		/* The ghosted wheel deliberately runs past the right edge, and a reading
-		   page's marginal wheels run past both — they are drawn larger than the
+		   page's marginal wheels run past both - they are drawn larger than the
 		   margins holding them so that some are cut off by the window. Without
 		   this, every overrun would widen the document and the page would scroll
 		   sideways.
@@ -75,10 +112,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
 	/* Full-bleed, always. The masthead rack and the colophon run the width of
 	   the window on every page; only a reading column narrows, and it does that
-	   itself — see ReadingLayout.
+	   itself - see ReadingLayout.
 
 	   The column is at least a screen tall so the colophon is held at the foot
-	   of the window on a page too short to fill one — otherwise it rides up
+	   of the window on a page too short to fill one - otherwise it rides up
 	   under the content and reads as the end of a page that has not ended. */
 	.sheet {
 		position: relative;

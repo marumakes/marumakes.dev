@@ -33,6 +33,18 @@
 			return;
 		}
 
+		// The canvas cannot use var(), so the tokens are read off the root and
+		// the stylesheet stays the one authority on colour. Each is an unwrapped
+		// "r, g, b" triplet so an alpha can be appended per fleck.
+		const sheet = getComputedStyle(document.documentElement);
+		const light = sheet.getPropertyValue('--grain-light').trim();
+		const dark = sheet.getPropertyValue('--grain-dark').trim();
+		const bloom = sheet.getPropertyValue('--grain-bloom').trim();
+
+		// A speck strong enough to read as paper tooth on parchment reads as
+		// sensor noise on a dark ground, so the ceiling is a token too.
+		const alpha = Number(sheet.getPropertyValue('--grain-alpha')) || 0.05;
+
 		const ratio = window.devicePixelRatio || 1;
 		const width = window.innerWidth;
 		const height = window.innerHeight;
@@ -47,8 +59,8 @@
 		// Fibre speckle: light and dark specks in roughly equal measure.
 		const flecks = Math.round((width * height) / FLECK_DENSITY);
 		for (let i = 0; i < flecks; i += 1) {
-			const shade = Math.random() > 0.5 ? '29, 26, 22' : '255, 252, 242';
-			context.fillStyle = `rgba(${shade}, ${(Math.random() * 0.05).toFixed(3)})`;
+			const shade = Math.random() > 0.5 ? dark : light;
+			context.fillStyle = `rgba(${shade}, ${(Math.random() * alpha).toFixed(3)})`;
 			context.fillRect(Math.random() * width, Math.random() * height, 1, 1);
 		}
 
@@ -60,8 +72,8 @@
 			const radius = 12 + Math.random() * 34;
 			const wash = context.createRadialGradient(x, y, 0, x, y, radius);
 
-			wash.addColorStop(0, 'rgba(140, 106, 54, 0.05)');
-			wash.addColorStop(1, 'rgba(140, 106, 54, 0)');
+			wash.addColorStop(0, `rgba(${bloom}, ${alpha})`);
+			wash.addColorStop(1, `rgba(${bloom}, 0)`);
 			context.fillStyle = wash;
 			context.beginPath();
 			context.arc(x, y, radius, 0, Math.PI * 2);
@@ -80,4 +92,10 @@
 	// navigation, so the canvas is redrawn for whichever page is now on screen.
 	document.addEventListener('astro:page-load', paint);
 	window.addEventListener('resize', repaintWhenSettled);
+
+	// The grain is mixed for the sheet it sits on, so a change of sheet means
+	// a repaint: once for the masthead toggle, once for a reader on system
+	// preference whose OS flips under them.
+	document.addEventListener('marumakes:themechange', paint);
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paint);
 </script>

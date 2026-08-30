@@ -12,7 +12,7 @@ import GearDivider from '../components/GearDivider.astro';
 // reckoned from.
 //
 // FIXME: DESIGN.md §6 records this exact string as cut for breaking the
-// honesty rule — nothing on the drawing says it is no. 04, and it is not
+// honesty rule - nothing on the drawing says it is no. 04, and it is not
 // sighted at anything. Its replacement is `Astrolabe · Seven pointers · Limb
 // graduated 6°`. The decision was made; the code never followed. See
 // PORT-PLAN.md §1 item 7.
@@ -25,7 +25,7 @@ const HERO_LINKS = [
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 
-// The stack opens on the newest note, so it is sorted by number descending —
+// The stack opens on the newest note, so it is sorted by number descending -
 // No. 1 is the first one written and sits deepest.
 const notes = (await getCollection('creative')).sort((a, b) => b.data.order - a.data.order);
 ---
@@ -36,9 +36,9 @@ const notes = (await getCollection('creative')).sort((a, b) => b.data.order - a.
 >
 	<Hero
 		eyebrow="Maru · Software Engineer"
-		heading="Lorem ipsum dolor"
-		headingTail="sit amet elit"
-		dek="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+		heading="I'm Maru, a "
+		headingTail="maker of many things"
+		dek="As a Computer Science student, I spend my time exploring cool tech by building projects I'm genuinely interested in, and by making tools to automate the boring parts of life. When I'm not coding, I'm often writing about D&D. "
 		links={HERO_LINKS}
 		spec={HERO_SPEC}
 	/>
