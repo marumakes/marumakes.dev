@@ -4,6 +4,9 @@ import Masthead from '../components/Masthead.astro';
 import Colophon from '../components/Colophon.astro';
 import PaperGrain from '../components/PaperGrain.astro';
 import '../styles/global.css';
+// After the tokens on purpose: the print block forces the day palette by
+// naming the same selectors the night one uses, and lands later to win.
+import '../styles/print.css';
 
 interface Props {
 	title: string;

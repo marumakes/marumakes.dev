@@ -1,0 +1,182 @@
+/* ============================================================
+   marumakes - print
+
+   What a case study or a field note becomes on paper. One place
+   rather than an @media print block in each component: print is a
+   medium, not a component's business, and the whole sheet has to
+   be readable as one design or the page comes out as a screen
+   with bits missing.
+
+   Two jobs. Strip the furniture, which is all screen apparatus and
+   none of it survives being still on paper. And force the day
+   sheet, because a reader on the night sheet would otherwise put
+   a near-black ground through a printer.
+   ============================================================ */
+
+@media print {
+  /* --- the sheet is always the day one ----------------------
+	   Named against the exact selectors that set the night palette,
+	   so this wins on specificity rather than on file order: the
+	   media-query block is `:root:not([data-theme="light"])` and the
+	   toggle's is `:root[data-theme="dark"]`, both (0,2,0). Matching
+	   them here and landing later is what makes this hold.
+
+	   Only the grounds and inks are restated. The accents, rules and
+	   leaf ramp are already the day values on `:root` and are not
+	   overridden by anything that survives to paper. */
+  :root,
+  :root:not([data-theme="light"]),
+  :root[data-theme="dark"] {
+    color-scheme: light;
+    --paper: #ece7d9;
+    --paper-2: #f4f1e7;
+    --ink: #171512;
+    --ink-soft: #554f45;
+    --ink-faint: #6f6759;
+    --rule: #cfc6b0;
+    --rule-soft: #ded6c4;
+    --gold: #7c5f24;
+    --gold-mid: #977a36;
+    --mauve: #5a3f8c;
+    --mauve-soft: #9683c2;
+    --leaf-1: #f4f1e7;
+    --leaf-2: #efeade;
+    --leaf-3: #e9e3d5;
+    --leaf-4: #e4ddcd;
+    --cta-ground: #171512;
+    --cta-line: #171512;
+    --cta-ink: #f4f1e7;
+    --plate-window: #fff;
+  }
+
+  /* The ruling is a watermark on a screen and a grey wash on paper,
+	   where it costs ink and buys nothing. The ground goes with it:
+	   parchment is the *screen's* material, and a printer would lay
+	   it down as a flat tint over the whole sheet. Paper is already
+	   paper. */
+  html {
+    background: none;
+  }
+
+  body {
+    color: var(--ink);
+  }
+
+  /* --- furniture -------------------------------------------
+	   All of it is apparatus for reading on a screen. The gauge
+	   reports scroll position, the toggle changes a sheet that is
+	   now fixed, the wheels and grain are ornament that reads as
+	   printer dirt, and the nav offers destinations that cannot be
+	   reached from paper. */
+  .grain,
+  .rack,
+  .nav,
+  .gears,
+  .ghost,
+  .gauge,
+  .margin,
+  .copy,
+  .seal {
+    display: none !important;
+  }
+
+  /* The brand stays. A printed sheet with no name on it belongs to
+	   nobody, and this is the one piece of the masthead that is a
+	   statement of authorship rather than a control. */
+  .head {
+    display: block;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--gold-mid);
+  }
+
+  /* --- the reading page ------------------------------------
+	   The three-track grid exists to hold furniture in the margins.
+	   With the margins empty it would print a narrow column between
+	   two blank inches, so the measure takes the whole page and the
+	   sheet's own gutters do the framing. */
+  .sheet {
+    padding: 0;
+    min-height: 0;
+  }
+
+  .document {
+    display: block;
+    padding-block: 0;
+  }
+
+  .prose,
+  .back,
+  .masthead {
+    max-width: none;
+  }
+
+  /* The index card is sticky against the viewport, which on paper
+	   means it prints once wherever the first page happened to be.
+	   It becomes a block under the title instead - the same labels
+	   in the same order, read before the piece rather than beside
+	   it. */
+  .spec {
+    position: static;
+    width: auto;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding: 0.9rem 0 0;
+    margin-bottom: 1.6rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 1.6rem;
+  }
+
+  /* A link's destination is invisible on paper, so the ones that
+	   leave the site say where they go. Internal links are left
+	   alone: a bare path helps nobody, and every one of them is
+	   reachable from the address already printed in the colophon. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-family: var(--font-mono);
+    font-size: 0.72em;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+  }
+
+  /* --- page breaks -----------------------------------------
+	   A heading at the foot of a sheet with its text overleaf is the
+	   one break that always reads as a mistake. */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  p,
+  li,
+  blockquote,
+  figure {
+    break-inside: avoid;
+  }
+
+  /* Screenshots are the only images here and they are evidence, so
+	   they are kept whole and held to something a page can carry. */
+  .window {
+    break-inside: avoid;
+    max-height: 12cm;
+  }
+
+  /* A spell table can outrun a page, and a table that breaks without
+	   its header leaves a column of numbers labelled by nothing. The
+	   header repeats on each sheet; rows are kept whole. */
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  /* Nothing is hovering or focused on paper, and both would print
+	   as a stray rule. */
+  a {
+    text-decoration: none;
+  }
+}
