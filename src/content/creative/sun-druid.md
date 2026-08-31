@@ -1,7 +1,7 @@
 ---
 title: "Druid: Circle of the Sun"
 kind: class
-summary: A D&D 5e Druid subclass I designed for one of my players.
+summary: The sustaining and radiant light of the Sun illuminates this D&D 5e Druid subclass I designed for one of my players.
 order: 2
 filed: 2025-12-21
 ---

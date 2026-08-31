@@ -1,7 +1,7 @@
 ---
 title: 6 Lessons I Learnt Running a D&D Party of 9
 kind: article
-summary: Notes from DMing an unusually large table - combat, pacing, and keeping everyone actually playing.
+summary: "An exploration of the challenges of running a very large party; the elusive art of keeping everyone engaged (not guaranteed)."
 order: 1
 filed: 2026-06-18
 ---
