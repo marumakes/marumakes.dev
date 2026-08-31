@@ -4,7 +4,7 @@ tagline: A D&D 5e character sheet built for the table - cloud-synced, beautiful,
 stack: [React 19, TypeScript, Vite, TipTap]
 mounting: Supabase · Vercel
 finish: Tailwind CSS
-firstLight: 2025 # TODO: confirm - placeholder
+firstLight: 2026-04
 designation: Chartula
 condition: in-service
 screenshot: /projects/parchment-people/screenshot.png

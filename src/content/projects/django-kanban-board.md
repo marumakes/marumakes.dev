@@ -3,9 +3,9 @@ title: Kanban Board
 tagline: A drag-and-drop kanban board with per-user boards and ownership-enforced access control - built to get comfortable with Django before a coursework assignment.
 stack: [Django, SQLite]
 mounting: SortableJS · Tailwind CSS
-firstLight: 2024 # TODO: confirm - placeholder
+firstLight: 2025-08
 designation: Tabula
-condition: complete # TODO: confirm - placeholder
+condition: complete
 screenshot: /projects/django-kanban-board/screenshot.png
 screenshotAlt: A kanban board with several columns of draggable cards
 repoUrl: https://github.com/marumakes/django-kanban-board

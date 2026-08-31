@@ -3,9 +3,9 @@ title: Claude Usage Menu Bar
 tagline: A macOS menu bar app showing live Claude Code session and weekly usage - my first Swift project, and an end to typing /usage.
 stack: [Swift, SwiftUI]
 mounting: MenuBarExtra
-firstLight: 2026 # TODO: confirm - placeholder
+firstLight: 2026-07
 designation: Vigil
-condition: in-service # TODO: confirm - placeholder
+condition: in-service
 screenshot: /projects/claude-usage-menu-bar/screenshot.png
 screenshotAlt: A macOS menu bar dropdown showing Claude Code session and weekly usage percentages
 repoUrl: https://github.com/marumakes/claude-usage-menu-bar

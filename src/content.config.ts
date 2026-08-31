@@ -22,9 +22,20 @@ const projects = defineCollection({
     // has either: a local script has nothing to mount.
     mounting: z.string().optional(),
     finish: z.string().optional(),
-    // The year it was first useful to someone - the astronomical term for an
+    // When it was first useful to someone - the astronomical term for an
     // instrument's first use, which maps exactly onto "first shipped".
-    firstLight: z.number(),
+    //
+    // Written `YYYY-MM`, and rendered "Mar 2026" like a note's `filed`, so both
+    // dated fields on the site speak the same way. It was a bare year until
+    // 31 Aug 2026, which stopped telling anyone anything once most projects
+    // landed in the same one - five entries reading "2026" and a register head
+    // reading "2026 - 2026". A month is also closer to true: first light is a
+    // moment, not a twelve-month window.
+    //
+    // No day is stored, because none is known. YAML leaves `2026-03` as a
+    // string, coerce reads it as the 1st in UTC, and nothing renders that far
+    // down - so the invented part never reaches the page or the frontmatter.
+    firstLight: z.coerce.date(),
     // Its constellation name, engraved on the plate caption.
     designation: z.string(),
     condition: z.enum(["in-service", "complete", "reference"]),

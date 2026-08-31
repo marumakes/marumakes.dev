@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { numberWheel } from '../lib/mechanism';
-import { conditionLabel, roman, type Condition } from '../lib/register';
+import { conditionLabel, monthYear, roman, type Condition } from '../lib/register';
 
 interface Props {
 	project: CollectionEntry<'projects'>;
@@ -41,7 +41,7 @@ const links = [
 		</span>
 		<span class="field">
 			<span class="k">First light</span>
-			<span class="v">{firstLight}</span>
+			<span class="v">{monthYear(firstLight)}</span>
 		</span>
 		<span class="field">
 			<span class="k">Condition</span>

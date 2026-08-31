@@ -42,8 +42,15 @@ export function conditionLabel(condition: Condition): string {
   return CONDITIONS[condition];
 }
 
-/** "Filed - Mar 2026". The month is what gives the exact ordering meaning. */
-export function filedLabel(date: Date): string {
+/**
+ * "Mar 2026". Both dated fields on the site render through here - a note's
+ * `filed` and a project's `firstLight` - so the two read as one vocabulary.
+ *
+ * Named for its output rather than for either field: it was `filedLabel` while
+ * the notes were the only thing dated, and calling that on a project's first
+ * light read as though the project had been filed.
+ */
+export function monthYear(date: Date): string {
   return date.toLocaleDateString("en-GB", {
     month: "short",
     year: "numeric",
@@ -51,7 +58,9 @@ export function filedLabel(date: Date): string {
   });
 }
 
-export function filedYear(date: Date): string {
+/** UTC throughout: a date stored as a bare month must not shift under a
+    timezone and report the month before. */
+export function yearOf(date: Date): string {
   return String(date.getUTCFullYear());
 }
 

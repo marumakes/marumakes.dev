@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { ghostWheel } from '../lib/mechanism';
+import { yearOf } from '../lib/register';
 import RegisterEntry from './RegisterEntry.astro';
 import SectionHead from './SectionHead.astro';
 
@@ -11,9 +12,16 @@ interface Props {
 const { projects } = Astro.props;
 
 // The range comes from the entries themselves rather than being written down,
-// so it can't drift when a project is added.
-const years = projects.map((project) => project.data.firstLight);
-const span = `${projects.length} instruments · ${Math.min(...years)} – ${Math.max(...years)}`;
+// so it can't drift when a project is added. Years only: the head is a span,
+// and a span written to the month would be finer than the thing it summarises.
+//
+// One year on both ends collapses to a single figure rather than reading
+// "2026 - 2026", which is what the register will say once the placeholder dates
+// are confirmed and most of them land in the same year.
+const years = projects.map((project) => Number(yearOf(project.data.firstLight)));
+const first = Math.min(...years);
+const last = Math.max(...years);
+const span = `${projects.length} instruments · ${first === last ? first : `${first} – ${last}`}`;
 ---
 
 <section class="register" aria-labelledby="register">

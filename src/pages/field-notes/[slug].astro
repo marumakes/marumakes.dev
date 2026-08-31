@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ReadingLayout from '../../layouts/ReadingLayout.astro';
-import { filedLabel, lengthLabel, wordCount } from '../../lib/register';
+import { monthYear, lengthLabel, wordCount } from '../../lib/register';
 
 export async function getStaticPaths() {
 	const notes = await getCollection('creative');
@@ -29,7 +29,7 @@ const words = wordCount(note.body ?? '');
 const spec = [
 	{ term: 'Kind', value: KINDS[kind] },
 	{ term: 'No.', value: String(order) },
-	{ term: 'Filed', value: filedLabel(filed) },
+	{ term: 'Filed', value: monthYear(filed) },
 	{ term: 'Length', value: lengthLabel(words) },
 ];
 ---

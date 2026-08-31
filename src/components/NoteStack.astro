@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import SectionHead from './SectionHead.astro';
-import { filedLabel, filedYear, lengthLabel, wordCount } from '../lib/register';
+import { monthYear, yearOf, lengthLabel, wordCount } from '../lib/register';
 
 interface Props {
 	notes: CollectionEntry<'creative'>[];
@@ -31,8 +31,8 @@ const leaves = notes.map((note) => ({
 	summary: note.data.summary,
 	kind: KINDS[note.data.kind],
 	number: note.data.order,
-	filed: filedLabel(note.data.filed),
-	year: filedYear(note.data.filed),
+	filed: monthYear(note.data.filed),
+	year: yearOf(note.data.filed),
 	length: lengthLabel(wordCount(note.body ?? '')),
 }));
 ---

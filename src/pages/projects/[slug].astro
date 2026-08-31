@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import ReadingLayout from '../../layouts/ReadingLayout.astro';
-import { conditionLabel, roman, wordCount, type Condition } from '../../lib/register';
+import { conditionLabel, monthYear, roman, wordCount, type Condition } from '../../lib/register';
 
 export async function getStaticPaths() {
 	const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -29,7 +29,7 @@ const spec = [
 	{ term: 'Movement', value: stack.join(' · ') },
 	{ term: 'Mounting', value: mounting },
 	{ term: 'Finish', value: finish },
-	{ term: 'First light', value: String(firstLight) },
+	{ term: 'First light', value: monthYear(firstLight) },
 	{ term: 'Condition', value: conditionLabel(condition as Condition) },
 ].filter((row): row is { term: string; value: string } => Boolean(row.value));
 
