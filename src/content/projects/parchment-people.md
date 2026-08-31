@@ -14,26 +14,24 @@ caseStudy: true
 order: 1
 ---
 
-## Lorem ipsum dolor
+## The Problem
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.
+In my recent D&D campaign ([read about it here](/field-notes/running-a-large-party)), I noticed that the players using online character sheets were split across three different platforms, all of which had significant problems. None of them were quite the solution we wanted (alas, not enough to send us back to paper and ink).
 
-Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
+D&D Beyond is highly polished, but much of its content is locked behind a paywall, and its heavy automation can take away some of the fun of managing a character sheet. Roll20 provides a free alternative, but its interface and UX left a lot to be desired. I myself spent most of one session Alt-Tabbing between the official online PDF character sheet and a Notion document containing all the information the PDF couldn't accommodate.
 
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.
+## The Solution
 
-## Consectetur adipiscing elit
+Parchment People is my solution to this: a beautifully designed character sheet with optional automation for the more tedious parts of character management. As a web app, the sheet can grow naturally with whatever information a character needs to contain, rather than being constrained by the physical dimensions of a piece of paper (within reason, and Supabase's limits).
 
-Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur.
+It also supports party play. The Groups feature allows character sheets to be shared between DMs and players in read-only mode, making it easy for everyone at the table to keep track of each other's characters.
 
-## Sed do eiusmod tempora
+## Decisions Behind the Development
 
-**Lorem ipsum dolor sit amet.** At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi.
+Supabase's row-level security policies were particularly well suited to the Groups feature, allowing me to define flexible permissions for who can view a character sheet and what they can do with it. Supabase's real-time functionality also allows party members to watch a sheet being edited as changes happen.
 
-**Consectetur adipiscing elit sed.** Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus.
+Because sheets are read-only to everyone except their author, simultaneous editing conflicts aren't an issue. In this respect, the system mirrors the behaviour of a paper character sheet: one person writes on it, while everyone else can look over their shoulder.
 
-**Tempor incididunt ut labore.** Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
+The biggest challenge I encountered during development was polishing the UI/UX, particularly around edge cases and bugs. This is something I care about deeply, so I spent a great deal of time iterating on the interface with Claude. Alongside this collaboration, I researched UI/UX more broadly (including reading Norman's _The Design of Everyday Things_) and developed a workflow that suited the way I like to build interfaces. I've since extracted that workflow into a Claude skill and applied it to my other projects, including this site.
 
-## Ut labore et dolore
-
-Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+As I write this case study, I have also planned - but not yet implemented - a homebrew monster feature inspired by my recent Rust project (currently a WIP). This will allow DMs to create and export well-designed monster stat blocks. My goal is to grow Parchment People into a general-purpose D&D toolkit rather than keeping it solely as an online character sheet.
