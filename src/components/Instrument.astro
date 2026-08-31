@@ -8,19 +8,19 @@ interface Props {
 const { motion = 'running' } = Astro.props;
 
 // The description is held to the same rule as an engraved caption: it may only
-// say what is actually there. A stopped instrument must not be described as
+// say what is actually there. A broken instrument must not be described as
 // turning, or a reader using the label gets a different drawing from the one on
 // the page. See design/DESIGN.md §6.
 const LABELS: Record<Motion, string> = {
 	running:
 		'An engraved astrolabe: a graduated limb, an almucantar plate, a slowly turning rete of star pointers, and a sighting alidade',
-	stopped:
-		'An engraved astrolabe that has stopped: a graduated limb, an almucantar plate, and a rete and alidade halted between graduations, the rete straining against something and dropping back without ever turning',
+	broken:
+		'A broken engraved astrolabe: a graduated limb, an almucantar plate, and a rete and alidade jammed between graduations, the rete straining against whatever is holding it and dropping back without ever turning',
 };
 ---
 
 <svg
-	class="instrument"
+	class:list={['instrument', motion === 'broken' && 'unlit']}
 	viewBox="0 0 420 420"
 	role="img"
 	aria-label={LABELS[motion]}
@@ -49,8 +49,29 @@ const LABELS: Record<Motion, string> = {
 		fill: var(--ink-faint);
 	}
 
+	/* A broken instrument has gone cold, and this is the only thing on the 404
+	   that says so at a glance.
+
+	   The page's argument is that this is the front page's own astrolabe, broken
+	   - but a broken astrolabe is pixel-identical to a turning one in any single
+	   frame, and the rete's judder is still for 5.7 of every 6.5 seconds. So in a
+	   screenshot, or to anyone who does not stand and watch, the largest object
+	   on the page was saying nothing, and every word that said "error" was under
+	   0.7rem of mono. Motion is the one channel a glance does not use.
+
+	   Only the lit parts dim - the brass and the plotted line, each dropping to
+	   the quieter token of its own family. Contrast falls on both sheets: brass
+	   4.83:1 to 3.30:1 by day, 5.26:1 to 3.59:1 by night. The graduations, the
+	   almucantars and the numerals keep their ink, so the drawing stays a
+	   drawing rather than turning to mush. */
+	.instrument.unlit :global(.rule-gold-strong) { stroke: var(--gold-mid); }
+	.instrument.unlit :global(.fitting) { stroke: var(--gold-mid); }
+	.instrument.unlit :global(.hub) { fill: var(--gold-mid); }
+	.instrument.unlit :global(.ecliptic) { stroke: var(--mauve-soft); }
+	.instrument.unlit :global(.star) { fill: var(--mauve-soft); }
+
 	/* The ecliptic draws itself in once, as if being struck. pathLength="1"
-	   on the circle is what lets one dash length cover any radius. A stopped
+	   on the circle is what lets one dash length cover any radius. A broken
 	   instrument is drawn without this class. */
 	.instrument :global(.trace-in) {
 		stroke-dasharray: 1;
@@ -72,7 +93,7 @@ const LABELS: Record<Motion, string> = {
 
 	   Under `prefers-reduced-motion` the global rule cuts the animation and the
 	   declaration below is what remains, so the instrument still stands at the
-	   angle it stopped at. It just stops trying. */
+	   angle it broke at. It just stops trying. */
 	.instrument :global(.jammed) {
 		transform-box: view-box;
 		transform-origin: 50% 50%;
@@ -82,7 +103,7 @@ const LABELS: Record<Motion, string> = {
 
 	/* Still for six of every six and a half seconds. The wait is what does the
 	   work: without it the twitching reads as a mechanism running badly rather
-	   than as one that has stopped. */
+	   than as one that has broken. */
 	@keyframes judder {
 		0%, 88% { transform: rotate(var(--rest)); }
 		89.5% { transform: rotate(calc(var(--rest) + 2.4deg)); }

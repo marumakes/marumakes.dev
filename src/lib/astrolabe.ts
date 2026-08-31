@@ -11,9 +11,16 @@
 
 import { el, polar, stroked, text } from "./mechanism";
 
-/** Running, or stopped where it stood. Only the rete and the alidade know the
-    difference; the plate beneath them never moved in the first place. */
-export type Motion = "running" | "stopped";
+/** Running, or broken where it stood. Only the rete and the alidade know the
+    difference; the plate beneath them never moved in the first place.
+
+    It was `"stopped"` until 31 Aug 2026, on an argument written up here about a
+    stopped instrument reading as one that halted rather than one that failed.
+    Maru's intent was a *broken* astrolabe throughout - the judder was drawn for
+    a mechanism fighting something that will not give - so the word was wrong,
+    not the drawing. Nothing about the geometry or the animation changed with
+    the rename. */
+export type Motion = "running" | "broken";
 
 const CX = 210;
 const CY = 210;
@@ -27,21 +34,21 @@ const RETE_PERIOD_S = 240;
 const ALIDADE_PERIOD_S = 96;
 
 /**
- * Where the two moving parts are left standing once it has stopped.
+ * Where the two moving parts are left standing once it has broken.
  *
  * Both are half a division short of a mark, so nothing on the instrument lines
  * up with anything else: the alidade sits three degrees from either graduation
  * on a limb ticked every 6°, the rete fifteen from either boundary of an
- * ecliptic divided every 30°. Parked square, a stopped instrument reads as one
- * set deliberately; parked between marks it reads as one that stopped.
+ * ecliptic divided every 30°. Parked square it reads as an instrument set
+ * deliberately; parked between marks it reads as one that failed where it was.
  *
  * The rete then strains against whatever is holding it and drops back - see
  * `.jammed` in `components/Instrument.astro`. It is given the angle to rest at
  * rather than a transform, because the straining is the stylesheet's business
  * and the angle is this file's.
  */
-const ALIDADE_STOPPED_DEG = 5 * TICK_STEP + TICK_STEP / 2;
-const RETE_STOPPED_DEG = NUMBERED_STEP + NUMBERED_STEP / 2;
+export const ALIDADE_BROKEN_DEG = 5 * TICK_STEP + TICK_STEP / 2;
+const RETE_BROKEN_DEG = NUMBERED_STEP + NUMBERED_STEP / 2;
 
 export function astrolabe(motion: Motion = "running"): string {
   return [
@@ -130,10 +137,6 @@ const POINTERS = [
   { angle: 340, reach: 0.72 },
 ];
 
-/** Exported so a caption can read the count off the drawing rather than
-    restate it and risk saying something the drawing does not. */
-export const POINTER_COUNT = POINTERS.length;
-
 /** The turning frame: the ecliptic divided into its twelve signs, with a
     pointer reaching to each named star. */
 function rete(motion: Motion): string {
@@ -141,12 +144,12 @@ function rete(motion: Motion): string {
   const ey = CY - 40;
   const er = 104;
 
-  // Stopped, the ecliptic is simply there. `trace-in` strikes it on as the
-  // page loads, which is movement, and this instrument has none.
+  // Broken, the ecliptic is simply there. `trace-in` strikes it on as the
+  // page loads, which is movement, and this instrument has none of its own.
   const frame =
     motion === "running"
       ? `<g class="rete turning" style="--spin:${RETE_PERIOD_S}s">`
-      : `<g class="rete jammed" style="--rest:${RETE_STOPPED_DEG}deg">`;
+      : `<g class="rete jammed" style="--rest:${RETE_BROKEN_DEG}deg">`;
 
   const parts = [
     frame,
@@ -192,12 +195,12 @@ function rete(motion: Motion): string {
 
 /** A sighting rule with two open vanes, turning the other way. */
 function alidade(motion: Motion): string {
-  // Stopped, this one simply stands where it was left. It is sighted by hand,
+  // Broken, this one simply stands where it was left. It is sighted by hand,
   // so nothing would be straining against it - only the rete does that.
   const frame =
     motion === "running"
       ? `<g class="turning widdershins" style="--spin:${ALIDADE_PERIOD_S}s">`
-      : `<g transform="rotate(${ALIDADE_STOPPED_DEG} ${CX} ${CY})">`;
+      : `<g transform="rotate(${ALIDADE_BROKEN_DEG} ${CX} ${CY})">`;
 
   return [
     frame,

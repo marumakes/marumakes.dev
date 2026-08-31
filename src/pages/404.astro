@@ -1,13 +1,28 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import { POINTER_COUNT } from '../lib/astrolabe';
+import { ALIDADE_BROKEN_DEG } from '../lib/astrolabe';
 
-// True of the drawing beside it and of nothing else: it is the same astrolabe
-// as the front page's, carrying this many pointers, and it is not moving. The
-// count is read off the drawing rather than typed here, so the two cannot
-// drift. See design/DESIGN.md §6.
-const SPEC = ['Astrolabe', `${POINTER_COUNT} pointers`, 'Stopped'];
+// The same legend the front page carries, reading what this instrument reads.
+// It was written in the other style - `Astrolabe · 7 pointers · Stopped` - which
+// was the caption §6 once required everywhere and which the front page no
+// longer speaks. Two plates of the same instrument were describing it in two
+// different hands.
+//
+// `Broken`, not `Stopped`: the drawing was always meant to be a broken
+// instrument rather than a halted one, and the docs had talked themselves into
+// the other word. The judder is a mechanism fighting something that will not
+// give, which is not what stopping looks like.
+//
+// The altitude is the one figure on the site that is not invented. The front
+// page's alidade turns, so it holds no reading; this one is jammed at a real
+// angle the drawing owns. Taken from the constant rather than typed, so
+// regraduating the limb moves the caption with it.
+const SPEC = [
+	'Astrolabe no. 04',
+	`Alt +${ALIDADE_BROKEN_DEG}° 00′`,
+	'Broken',
+];
 
 const LINKS = [
 	{ href: '/', label: '← Back to the front page', emphasis: 'filled' as const },
@@ -17,14 +32,14 @@ const LINKS = [
 
 <BaseLayout title="Not Found - Marumakes" description="No page is filed at this address.">
 	{/* The front page's opening plate, word for word the same furniture, with
-	    the instrument stopped between graduations. */}
+	    the instrument broken between graduations. */}
 	<Hero
 		eyebrow="Error 404"
-		heading="Nothing filed here"
-		dek="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+		heading="Nothing filed at this address."
+		dek="Not only was the search void, it seems to have jammed the astrolabe against one of the graduations..."
 		links={LINKS}
 		spec={SPEC}
-		motion="stopped"
+		motion="broken"
 	/>
 </BaseLayout>
 
