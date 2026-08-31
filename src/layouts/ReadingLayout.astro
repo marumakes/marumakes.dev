@@ -331,4 +331,73 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 	}
 
 	.prose :global(img) { margin-top: 1.4rem; border: 1px solid var(--rule); }
+
+	/* A ruled plate: the same language as the register's spec column - a mono
+	   gold header over ink readings, ruled top and bottom in the structural
+	   gold, and set tighter than the prose around it so it reads as tabulated
+	   reference rather than a stray run of paragraphs. */
+	.prose :global(table) {
+		width: 100%;
+		margin-top: 1.9rem;
+		border-collapse: collapse;
+		font-variant-numeric: tabular-nums;
+		border-top: 1px solid var(--gold-mid);
+		border-bottom: 1px solid var(--gold-mid);
+	}
+
+	/* Column headers are labels, so they speak in the site's label voice -
+	   the spec card's size and tracking exactly. */
+	.prose :global(th) {
+		font-family: var(--font-mono);
+		font-weight: 500;
+		font-size: 0.56rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--gold);
+		text-align: left;
+		vertical-align: bottom;
+		padding: 0.85rem 2.25rem 0.7rem 0;
+		border-bottom: 1px solid var(--rule);
+	}
+
+	/* No rule between rows. Three rules carry the whole table - the row
+	   rhythm does the grouping, which is what keeps it quiet enough to sit
+	   next to the spec card. */
+	.prose :global(td) {
+		padding: 0.42rem 2.25rem 0.42rem 0;
+		font-size: 0.94rem;
+		line-height: 1.5;
+		color: var(--ink-soft);
+		vertical-align: baseline;
+	}
+
+	/* Breathing room inside the outer rules, so the readings sit on the plate
+	   rather than against its edges. */
+	.prose :global(tbody tr:first-child td) { padding-top: 0.8rem; }
+	.prose :global(tbody tr:last-child td) { padding-bottom: 0.85rem; }
+
+	/* The first column labels its row - give it the ink weight so the table
+	   reads left-to-right off a strong edge, like dt/dd in the spec list. */
+	.prose :global(tbody th),
+	.prose :global(td:first-child) {
+		color: var(--ink);
+		font-weight: 500;
+	}
+
+	.prose :global(tr > :last-child) { padding-right: 0; }
+
+	/* Markdown's alignment syntax (|---:|) emits a presentational `align`
+	   attribute, which loses to any rule in a stylesheet - so the alignment
+	   has to be honoured here or the column quietly ignores it. */
+	.prose :global(th[align='right']),
+	.prose :global(td[align='right']) { text-align: right; }
+
+	.prose :global(th[align='center']),
+	.prose :global(td[align='center']) { text-align: center; }
+
+	/* On a narrow screen a wide table scrolls in place rather than pushing the
+	   column sideways. */
+	@media (max-width: 620px) {
+		.prose :global(table) { display: block; overflow-x: auto; }
+	}
 </style>
