@@ -1,0 +1,156 @@
+---
+title: Bulgasari Monster
+kind: monster
+summary: A D&D 5e homebrew monster inspired by a recent trip to Korea, whose insatiable hunger for metal turns the weapons of those sent to slay it into its greatest strength.
+order: 3
+filed: 2026-08-02
+---
+
+import StatBlock from '../../components/StatBlock.astro';
+
+The elders of the Taebak Mountains of the Korean Peninsula tell of a monk whose prayers brought forth a creature from a handful of rice. What answered that prayer was no benevolent spirit, but a ravenous beast - the body of a bear, the trunk of an elephant, the eyes of a rhinoceros, the claws of a tiger, and the tail of a bull.
+
+The bulgasari knows neither reason nor restraint. It hungers for metal above all else, devouring weapons, armour, and anything else unfortunate enough to catch its attention. What begins as a hungry beast can, if left unchecked, become a colossal creature capable of consuming anything in its path.
+
+<StatBlock
+  type="Monstrosity, unaligned"
+  dex={12}
+  wis={12}
+  cha={7}
+  speed="40 ft., climb 30 ft."
+  immunities="Fire"
+/>
+
+Dexterity, Wisdom and Charisma do not change as the bulgasari grows, and neither does its speed. Everything else is listed by stage below.
+
+## Traits
+
+**Keen Smell.** The bulgasari has advantage on Wisdom (Perception) checks that rely on smell.
+
+**Metal Hunger.** If a creature within 10 feet is holding a metal weapon, the bulgasari is consumed by a maddening hunger and prioritises consuming that weapon over attacking the creature.
+
+## Actions
+
+**Disarm.** The bulgasari targets one creature within 10 feet that is holding a metal weapon. The target must make a Strength (Athletics) or Dexterity (Acrobatics) check contested by the bulgasari's Strength (Athletics) check. The target has advantage on the check if it is wielding the weapon with two or more hands. The bulgasari has advantage if it is at least one size larger than the target and disadvantage if it is at least one size smaller. On a success, the target drops the weapon in its space. The bulgasari can immediately use its Swallow bonus action to consume a weapon it has disarmed if the weapon is within its reach.
+
+**Swallow.** _Bonus Action._ The bulgasari swallows a metal weapon that isn't being worn or carried within its bite range. Those with keen eyes tell that the creature seems to swell and its rugged fur gleams as it consumes the weapon.
+
+## Growth
+
+The bulgasari's statistics are determined by the highest stage it has reached. When it reaches a new stage, replace its current statistics with those listed for that stage. It does not revert to a previous stage if weapons are removed from its stomach.
+
+| Weapons consumed | Stage      | Size       |
+| ---------------- | ---------- | ---------- |
+| 0–5              | Starving   | Medium     |
+| 6–14             | Hungry     | Large      |
+| 15–29            | Greedy     | Huge       |
+| 30+              | Insatiable | Gargantuan |
+
+## Starving
+
+<StatBlock
+  str={18}
+  con={17}
+  int={3}
+  size="Medium"
+  ac="13 (Natural armour)"
+  hp="60"
+  prof="+2"
+  skills="Perception +3"
+  senses="Passive Perception 13"
+  languages="None"
+  challenge="2 (450 XP)"
+  attacks={[
+      ['Bite', '+6', '5 ft.', '1d8 + 4 piercing'],
+      ['Claw', '+6', '5 ft.', '1d8 + 4 slashing'],
+  ]}
+/>
+
+## Hungry
+
+<StatBlock
+  str={20}
+  con={18}
+  int={4}
+  size="Large"
+  ac="14 (Natural armour)"
+  hp="90"
+  prof="+3"
+  skills="Perception +4"
+  senses="Passive Perception 14"
+  languages="None"
+  challenge="5 (1,800 XP)"
+  attacks={[
+      ['Bite', '+8', '10 ft.', '2d8 + 5 piercing'],
+      ['Claw', '+8', '5 ft.', '2d6 + 5 slashing'],
+  ]}
+/>
+
+**Multiattack.** The bulgasari makes two attacks, only one of which can be a Bite.
+
+## Greedy
+
+<StatBlock
+  str={22}
+  con={19}
+  int={5}
+  size="Huge"
+  ac="15 (Natural armour)"
+  hp="150"
+  prof="+4"
+  skills="Perception +5"
+  resistances="Bludgeoning, piercing, and slashing damage from nonmagical attacks"
+  senses="Passive Perception 15"
+  languages="Understands Common but doesn't speak it"
+  challenge="9 (5,000 XP)"
+  attacks={[
+      ['Bite', '+10', '10 ft.', '3d8 + 6 piercing'],
+      ['Claw', '+10', '10 ft.', '3d6 + 6 slashing'],
+  ]}
+/>
+
+**Multiattack.** The bulgasari makes three attacks, only one of which can be a Bite.
+
+## Insatiable
+
+<StatBlock
+  str={24}
+  con={20}
+  int={7}
+  size="Gargantuan"
+  ac="16 (Natural armour)"
+  hp="300"
+  prof="+6"
+  skills="Perception +7"
+  immunities="Bludgeoning, piercing, and slashing damage from nonmagical attacks"
+  conditions="Frightened, Poisoned"
+  senses="Passive Perception 17"
+  languages="Common"
+  challenge="14 (11,500 XP)"
+  attacks={[
+      ['Bite', '+12', '15 ft.', '4d10 + 7 piercing'],
+      ['Claw', '+12', '10 ft.', '4d8 + 7 slashing'],
+  ]}
+/>
+
+**Legendary Resistance (3/Day).** If the bulgasari fails a saving throw, it can choose to succeed instead.
+
+**Multiattack.** The bulgasari makes three attacks, only one of which can be a Bite.
+
+### Legendary Actions
+
+The bulgasari can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The bulgasari regains spent legendary actions at the start of its turn.
+
+**Attack.** The bulgasari makes one claw attack.
+
+**Move.** The bulgasari moves up to half its speed.
+
+**Devour (Costs 2 Actions).** The bulgasari makes one Bite attack against a Large or smaller creature within 15 feet. If the attack reduces the target to 0 hit points, the bulgasari swallows the target.
+
+The bulgasari can have only one creature swallowed at a time. A creature swallowed by the bulgasari is blinded and restrained and has total cover against attacks and other effects originating outside the bulgasari.
+
+If a swallowed creature regains consciousness, it can use its action to make a DC 17 Strength (Athletics) check. On a success, it escapes the bulgasari and falls prone in an unoccupied space within 5 feet of it.
+
+If a swallowed creature deals 30 or more damage to the bulgasari during a single turn, the bulgasari regurgitates that creature, which falls prone in an unoccupied space within 5 feet of it.
+
+If the bulgasari dies, a swallowed creature is no longer restrained and can escape from the corpse using 30 feet of movement, exiting prone.
