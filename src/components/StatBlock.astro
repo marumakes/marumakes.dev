@@ -1,0 +1,318 @@
+---
+/**
+ * A creature's readings, set as one plate.
+ *
+ * The same hand as the index card and the register's spec column - a mono gold
+ * label against an ink value - so a monster reads as another thing in the
+ * collection rather than as a page from someone else's rulebook. No fill and no
+ * box: the plate is bracketed by two gold rules, exactly like a table.
+ *
+ * Everything a stage has goes inside those two rules, attacks included. An
+ * attack table written as markdown instead sat *after* the plate, which put a
+ * second pair of gold rules a few pixels under the first and made four stages
+ * read as eight stacked panels.
+ *
+ * Every field is optional, and the block renders only what it is given. That is
+ * what lets one component carry both the creature's shared line (the scores
+ * that never change, speed, immunities) and each growth stage's own readings.
+ */
+
+/** A row of the attack table: what it is, its bonus, its reach, its damage. */
+type Attack = [name: string, toHit: string, reach: string, damage: string];
+
+interface Props {
+	/** The opening line - "Monstrosity, unaligned". */
+	type?: string;
+	/** Ability scores. Modifiers are derived, never passed - see `modifier`. */
+	str?: number;
+	dex?: number;
+	con?: number;
+	int?: number;
+	wis?: number;
+	cha?: number;
+	size?: string;
+	ac?: string;
+	hp?: string;
+	speed?: string;
+	prof?: string;
+	skills?: string;
+	resistances?: string;
+	immunities?: string;
+	conditions?: string;
+	senses?: string;
+	languages?: string;
+	challenge?: string;
+	attacks?: Attack[];
+}
+
+const {
+	type,
+	str,
+	dex,
+	con,
+	int: intelligence,
+	wis,
+	cha,
+	size,
+	ac,
+	hp,
+	speed,
+	prof,
+	skills,
+	resistances,
+	immunities,
+	conditions,
+	senses,
+	languages,
+	challenge,
+	attacks = [],
+} = Astro.props;
+
+/** 5e counts a score of 10 as no bonus, and one step per two points. */
+const ABILITY_BASELINE = 10;
+const POINTS_PER_STEP = 2;
+
+/**
+ * Derived rather than authored, so a score and its modifier can never disagree
+ * - the one kind of error a stat block is most likely to carry and least
+ * likely to have spotted.
+ */
+function modifier(score: number): string {
+	const step = Math.floor((score - ABILITY_BASELINE) / POINTS_PER_STEP);
+
+	return step >= 0 ? `+${step}` : String(step);
+}
+
+/** A score reads as its value and its modifier together: "18 (+4)". */
+function score(value: number | undefined): string | undefined {
+	return value === undefined ? undefined : `${value} (${modifier(value)})`;
+}
+
+/**
+ * Canonical stat-block order, so stages can never drift out of step with each
+ * other. Absent fields simply drop out, and the scores sit among the rest
+ * rather than in a band of their own - a stage that varies only three of the
+ * six would otherwise spread three readings across the whole measure.
+ */
+const readings: [string, string | undefined][] = [
+	['Size', size],
+	['Armour Class', ac],
+	['Hit Points', hp],
+	['Speed', speed],
+	['Proficiency Bonus', prof],
+	['Skills', skills],
+	['Damage Resistances', resistances],
+	['Damage Immunities', immunities],
+	['Condition Immunities', conditions],
+	['Senses', senses],
+	['Languages', languages],
+	['Challenge', challenge],
+];
+
+/**
+ * The scores keep a band of their own. Set among the other readings they pair
+ * off two to a line like everything else, which lands Str beside Hit Points
+ * and splits Con from Int across a row - so the one group a reader scans as a
+ * unit is the one the layout breaks up.
+ */
+const abilities: [string, string | undefined][] = [
+	['Str', score(str)],
+	['Dex', score(dex)],
+	['Con', score(con)],
+	['Int', score(intelligence)],
+	['Wis', score(wis)],
+	['Cha', score(cha)],
+];
+
+function present(rows: [string, string | undefined][]): [string, string][] {
+	return rows.filter((entry): entry is [string, string] => entry[1] !== undefined);
+}
+
+const scored = present(abilities);
+const given = present(readings);
+
+/**
+ * Readings pair up two to a line, which halves the plate and carries content
+ * out to the right-hand edge instead of leaving a ruled panel half empty. A
+ * value past this length takes the whole width rather than being squeezed into
+ * a column and wrapping to three lines.
+ */
+const WIDE_VALUE = 28;
+---
+
+<div class="plate">
+	{type && <p class="type">{type}</p>}
+
+	{
+		scored.length > 0 && (
+			<dl class="readings abilities">
+				{scored.map(([label, value]) => (
+					<>
+						<dt>{label}</dt>
+						<dd>{value}</dd>
+					</>
+				))}
+			</dl>
+		)
+	}
+
+	{
+		given.length > 0 && (
+			<dl class="readings">
+				{given.map(([label, value]) => (
+					<>
+						<dt class={value.length > WIDE_VALUE ? 'wide' : undefined}>{label}</dt>
+						<dd class={value.length > WIDE_VALUE ? 'wide' : undefined}>{value}</dd>
+					</>
+				))}
+			</dl>
+		)
+	}
+
+	{
+		attacks.length > 0 && (
+			<table class="attacks">
+				<thead>
+					<tr>
+						<th>Attack</th>
+						<th>To hit</th>
+						<th>Reach</th>
+						<th>Damage</th>
+					</tr>
+				</thead>
+				<tbody>
+					{attacks.map(([name, toHit, reach, damage]) => (
+						<tr>
+							<td>{name}</td>
+							<td>{toHit}</td>
+							<td>{reach}</td>
+							<td>{damage}</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		)
+	}
+</div>
+
+<style>
+	/* Bracketed by the structural gold, like a table, so the two read as one
+	   system down a page that carries both. */
+	.plate {
+		margin-top: 1.9rem;
+		border-top: 1px solid var(--gold-mid);
+		border-bottom: 1px solid var(--gold-mid);
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* Every band after the first is divided from the one above it. */
+	.plate > * + * { border-top: 1px solid var(--rule); }
+
+	.type {
+		margin: 0;
+		padding: 0.7rem 0;
+		font-family: var(--font-mono);
+		font-weight: 500;
+		font-size: 0.56rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--gold);
+	}
+
+	/* Label against value, the index card turned on its side. The label column
+	   is fixed so the stages line up with each other down the page, and set
+	   just wide enough for the longest label there is ("Condition Immunities",
+	   144px) rather than to a round number that strands the short ones.
+
+	   Baseline alignment rather than a padding nudge: the label is 0.56rem
+	   against a 0.94rem value, so anything hand-tuned drifts the moment either
+	   size moves. */
+	.readings {
+		display: grid;
+		grid-template-columns: 9.25rem minmax(0, 1fr) 9.25rem minmax(0, 1fr);
+		align-items: baseline;
+		gap: 0.4rem 1rem;
+		margin: 0;
+		padding: 0.9rem 0;
+	}
+
+	.readings dt {
+		font-family: var(--font-mono);
+		font-weight: 500;
+		font-size: 0.56rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--gold);
+	}
+
+	.readings dd {
+		margin: 0;
+		font-size: 0.94rem;
+		line-height: 1.5;
+		color: var(--ink);
+	}
+
+	/* A long value takes the whole width rather than wrapping to three lines in
+	   a quarter of it. Placing the label back in column 1 pushes the pair onto
+	   a row of its own, so it never straddles a pair beside it. */
+	.readings dt.wide { grid-column: 1; }
+	.readings dd.wide { grid-column: 2 / -1; }
+
+	/* "Str" needs nothing like the room "Condition Immunities" does, so the
+	   scores get a column of their own and sit three to a row - which is also
+	   what stops a creature with three varying scores leaving one stranded on
+	   a line by itself. */
+	.abilities { grid-template-columns: repeat(3, 2.75rem minmax(0, 1fr)); }
+
+	/* The prose table rules would give this its own gold brackets and a
+	   1.9rem margin, which is the doubling the plate exists to avoid. It is a
+	   band inside the plate, so it carries neither. */
+	.attacks {
+		width: 100%;
+		margin: 0;
+		border: 0;
+		border-collapse: collapse;
+	}
+
+	.attacks th {
+		font-family: var(--font-mono);
+		font-weight: 500;
+		font-size: 0.56rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--gold);
+		text-align: left;
+		border: 0;
+		padding: 0.9rem 1rem 0.55rem 0;
+	}
+
+	.attacks td {
+		font-size: 0.94rem;
+		line-height: 1.5;
+		color: var(--ink);
+		border: 0;
+		padding: 0.1rem 1rem 0.1rem 0;
+	}
+
+	.attacks tbody tr:last-child td { padding-bottom: 0.9rem; }
+	.attacks :is(th, td):last-child { padding-right: 0; }
+
+	/* Below this the measure is too narrow to give a value a quarter of it, so
+	   the pairs unstack and the wide values stop being a special case. */
+	@media (max-width: 900px) {
+		.readings { grid-template-columns: 9.25rem minmax(0, 1fr); }
+		.readings dd.wide { grid-column: 2; }
+		.abilities { grid-template-columns: repeat(2, 2.75rem minmax(0, 1fr)); }
+	}
+
+	/* A fixed label column eats a narrow measure alive. */
+	@media (max-width: 620px) {
+		.readings { grid-template-columns: minmax(0, 1fr); gap: 0.1rem 0; }
+		.readings dt { padding-top: 0.7rem; }
+		.readings dt.wide,
+		.readings dd.wide { grid-column: 1; }
+		/* Short enough to stay paired where the rest of the readings cannot. */
+		.abilities { grid-template-columns: repeat(2, 2.75rem minmax(0, 1fr)); gap: 0.4rem 1rem; }
+		.abilities dt { padding-top: 0; }
+	}
+</style>

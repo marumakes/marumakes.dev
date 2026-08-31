@@ -77,6 +77,10 @@ const ROUNDING_STEP = 100;
 export function wordCount(markdown: string): number {
   const prose = markdown
     .replace(/```[\s\S]*?```/g, " ")
+    // An MDX note carries imports and components. Neither is anything anyone
+    // reads, and a stat block's props would otherwise report as prose.
+    .replace(/^import\s[\s\S]*?from\s.*$/gm, " ")
+    .replace(/<[^>]*>/g, " ")
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
     .replace(/[#*_>`|-]/g, " ");
 
