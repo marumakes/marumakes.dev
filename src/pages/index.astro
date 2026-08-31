@@ -9,14 +9,19 @@ import GearDivider from '../components/GearDivider.astro';
 
 // The caption an instrument maker would engrave on the piece itself: which one
 // it is, what it is currently sighted at, and when its star positions are
-// reckoned from.
+// reckoned from. Altitude is the angle above the horizon in degrees and
+// arcminutes; an epoch is the instant those positions are true for, since
+// precession shifts them about 50" a year. The J is what makes it a Julian
+// epoch, written the way J2000.0 is - the decimal is a fraction of the year,
+// so .0 is 1 January.
 //
-// FIXME: DESIGN.md §6 records this exact string as cut for breaking the
-// honesty rule - nothing on the drawing says it is no. 04, and it is not
-// sighted at anything. Its replacement is `Astrolabe · Seven pointers · Limb
-// graduated 6°`. The decision was made; the code never followed. See
-// PORT-PLAN.md §1 item 7.
-const HERO_SPEC = ['Astrolabe no. 04', 'Alt +41° 12′', 'Epoch 2026.0'];
+// None of the three figures is checkable against the drawing, and that is
+// settled rather than outstanding. It was cut once under the honesty rule and
+// restored; Maru confirmed the preference on 31 Aug 2026. DESIGN.md §6 now
+// scopes that rule to claims about real things - projects, dates, stacks - and
+// says why a legend on a drawing of an instrument that does not exist is not
+// one of them.
+const HERO_SPEC = ['Astrolabe no. 04', 'Alt +41° 12′', 'Epoch J2026.0'];
 
 const HERO_LINKS = [
 	{ href: '#register', label: 'Read the register →', emphasis: 'filled' as const },
