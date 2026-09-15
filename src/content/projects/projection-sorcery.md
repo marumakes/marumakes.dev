@@ -3,11 +3,13 @@ title: Projection Sorcery
 tagline: A JJK-inspired afterimage vision pipeline for a robotics-course robot - real-time pose tracking, segmentation, and compositing.
 stack: [Python, OpenCV, NumPy]
 mounting: YOLO · on-robot camera
-firstLight: 2025-09 # TODO: confirm - placeholder, month invented too
+firstLight: 2026-09
 designation: Umbra
-condition: complete # TODO: confirm - placeholder
+condition: complete
 repoUrl: https://github.com/marumakes/projection-sorcery
 order: 3
+screenshot: /projects/projection-sorcery/pipeline-demo.gif
+screenshotAlt: An animated demo cycling through the vision pipeline's five stages, starting from a raw camera capture of a person walking along a riverbank
 ---
 
-Named after Naoya, the projection-sorcery user from Jujutsu Kaisen. Tracks a person in real time, segments them from the frame, and composites a stabilised "afterimage" - pose detection and segmentation feeding a live compositing pipeline running on the robot's camera feed.
+Inspired by Naoya Zenin, a projection-sorcery user from Jujutsu Kaisen. Captures a person, segments them from the frame, composites a stabilised "afterimage", and feeds this into OpenAI's image generator for an anime-style output, running on a webcam or a robot's camera feed.
