@@ -3,7 +3,7 @@ title: 6 Lessons I Learnt Running a D&D Party of 9
 kind: article
 summary: "An exploration of the challenges of running a very large party; the elusive art of keeping everyone engaged (not guaranteed)."
 order: 1
-filed: 2026-06-18
+filed: 2026-09-02
 ---
 
 Running a Dungeons & Dragons (D&D) campaign for the recommended party of 3-5 players is hard. Running one for more than 7 players is rarely done, and often ill-advised. Last year, I ran a 6-month campaign for 9 players. Here are some things I learnt along the way that helped me adapt gameplay so it was more fun for players and easier for me to run:

@@ -61,7 +61,7 @@ const creative = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/creative" }),
   schema: z.object({
     title: z.string(),
-    kind: z.enum(["class", "monster", "article"]),
+    kind: z.enum(["class", "monster", "article", "feature"]),
     summary: z.string(),
     // When it was written. Shown as "Mar 2026", and gives the fore-edge its
     // year - so the number orders the notes and the date says when.

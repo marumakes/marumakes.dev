@@ -3,7 +3,7 @@ title: "Druid: Circle of the Sun"
 kind: class
 summary: The sustaining and radiant light of the Sun illuminates this D&D 5e Druid subclass I designed for one of my players.
 order: 2
-filed: 2025-12-21
+filed: 2026-05-21
 ---
 
 The Arklights of Evermeet once served as the keepers of the Circle of the Sun, safeguarding the sacred bond between their druids and the Sun itself. This bond was embodied by the _Claíomh Solais_, the Sword of the Sun, an ancient relic entrusted to their care.
