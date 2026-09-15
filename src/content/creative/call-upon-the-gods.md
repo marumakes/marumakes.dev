@@ -14,9 +14,9 @@ On a success, the deity answers the character’s question with ‘Yes’ or ‘
 
 ## Relevance Bonus
 
-- Directly related to the deity’s portfolio: +5 to the roll (e.g. praying to Silvanus to ask if the blight currently rotting the local village's crops is natural or magical in origin)
-- Vaguely related: +2 (e.g. praying to Tempus to ask if a given location is an ideal spot for ambushing the opponent)
-- Unrelated: +0
+- **Directly Related (+5 Bonus):** the deity’s portfolio, e.g. praying to Silvanus to ask if the blight currently rotting the local village's crops is natural or magical in origin.
+- **Vaguely Related (+2 Bonus):** only loosely tied to the deity’s portfolio, e.g. praying to Tempus to ask if a given location is an ideal spot for ambushing the opponent.
+- **Unrelated (+0 Bonus):** no connection to the deity's portfolio.
 
 ## Devotion Bonus
 
