@@ -39,7 +39,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
+		{/* The SVG carries both sheets and is preferred wherever it is understood.
+		    The .ico is the fallback that search crawlers and older browsers read,
+		    and it holds a 48px cut because that is the size Google wants. */}
+		<link rel="icon" href="/favicon.ico" sizes="32x32" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonical} />
