@@ -16,6 +16,12 @@
 		z-index: 1;
 		pointer-events: none;
 		opacity: 0.45;
+
+		/* The *large* viewport height, which a collapsing mobile URL bar does not
+		   move. With `inset: 0` alone the element resized on every scroll pause,
+		   and between the resize and the repaint below there was an unpainted
+		   band at the foot of the page. */
+		height: 100lvh;
 	}
 </style>
 
@@ -24,6 +30,10 @@
 	const FLECK_DENSITY = 260;
 	const BLOOM_DENSITY = 90000;
 	const RESIZE_SETTLE_MS = 180;
+
+	// The box the current grain was mixed for, so a resize that changes nothing
+	// can be answered with nothing.
+	let painted = { width: 0, height: 0 };
 
 	function paint() {
 		const canvas = document.getElementById('paper-grain') as HTMLCanvasElement | null;
@@ -46,13 +56,21 @@
 		const alpha = Number(sheet.getPropertyValue('--grain-alpha')) || 0.05;
 
 		const ratio = window.devicePixelRatio || 1;
-		const width = window.innerWidth;
-		const height = window.innerHeight;
 
+		// The element's own box, not the window's. It is fixed to the large
+		// viewport, so this is the area actually being painted - reading
+		// window.innerHeight instead left the canvas short of its own element
+		// for as long as a mobile URL bar was retracted.
+		const width = canvas.offsetWidth;
+		const height = canvas.offsetHeight;
+
+		// Only the backing store is set here. Writing the measured box back to
+		// canvas.style.width would latch it: an explicit width outranks the
+		// `inset: 0` that sizes this element, so the canvas would hold the first
+		// value it ever measured and never follow the viewport again.
+		// The stylesheet owns the display size; this owns the resolution.
 		canvas.width = width * ratio;
 		canvas.height = height * ratio;
-		canvas.style.width = `${width}px`;
-		canvas.style.height = `${height}px`;
 		context.setTransform(ratio, 0, 0, ratio, 0, 0);
 		context.clearRect(0, 0, width, height);
 
@@ -79,13 +97,32 @@
 			context.arc(x, y, radius, 0, Math.PI * 2);
 			context.fill();
 		}
+
+		painted = { width, height };
 	}
 
 	let settle: number | undefined;
 
+	// A resize that leaves the canvas the same size has nothing to redraw. This
+	// is the common case on a phone, where the address bar sliding away fires
+	// resize on every scroll pause - and a repaint is a few thousand fills.
+	//
+	// Only this path is guarded. A change of sheet has to repaint at the same
+	// size, because the grain is mixed for the ink it sits under.
 	function repaintWhenSettled() {
 		window.clearTimeout(settle);
-		settle = window.setTimeout(paint, RESIZE_SETTLE_MS);
+
+		settle = window.setTimeout(() => {
+			const canvas = document.getElementById('paper-grain');
+
+			if (canvas
+				&& canvas.offsetWidth === painted.width
+				&& canvas.offsetHeight === painted.height) {
+				return;
+			}
+
+			paint();
+		}, RESIZE_SETTLE_MS);
 	}
 
 	// astro:page-load fires on first load and after every client-side
