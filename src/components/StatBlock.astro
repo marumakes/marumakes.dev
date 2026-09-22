@@ -224,9 +224,9 @@ const WIDE_VALUE = 28;
 	   just wide enough for the longest label there is ("Condition Immunities",
 	   144px) rather than to a round number that strands the short ones.
 
-	   Baseline alignment rather than a padding nudge: the label is 0.56rem
-	   against a 0.94rem value, so anything hand-tuned drifts the moment either
-	   size moves. */
+	   Baseline alignment rather than a padding nudge: the key is a good deal
+	   smaller than the 0.94rem value beside it, and it now moves with the label
+	   scale, so anything hand-tuned drifts the moment either size does. */
 	.readings {
 		display: grid;
 		grid-template-columns: 9.25rem minmax(0, 1fr) 9.25rem minmax(0, 1fr);
@@ -269,10 +269,16 @@ const WIDE_VALUE = 28;
 	   band inside the plate, so it carries neither. */
 	.attacks {
 		width: 100%;
-		margin: 0;
 		border: 0;
 		border-collapse: collapse;
 	}
+
+	/* The margin is claimed here rather than in the block above, which at
+	   (0,2,0) tied with nothing and lost to `.prose table` at (0,2,1) - every
+	   attack band carried 30px of the prose rhythm inside the plate. Only the
+	   margin is raised: matching the border at this weight would also beat
+	   `.plate > * + *` and take the band's own divider with it. */
+	.plate .attacks { margin: 0; }
 
 	.attacks th {
 		font-family: var(--font-mono);

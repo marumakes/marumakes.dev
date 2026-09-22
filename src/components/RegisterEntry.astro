@@ -150,7 +150,14 @@ const links = [
 
 	.numwheel :global(.tooth) { fill: none; stroke: var(--gold-mid); stroke-width: 0.8; }
 	.numwheel :global(.boss) { fill: none; stroke: var(--rule); stroke-width: 0.7; }
-	.entry:hover .numwheel :global(.tooth) { stroke: var(--gold); }
+	/* Guarded because a touch screen has no pointer to take away again: tapping
+	   anywhere in a row leaves it in its hover state until something else is
+	   tapped, so the whole register ends up looking half-lit. Both of these are
+	   decoration on a row that is not itself a link, so a phone simply does
+	   without them. */
+	@media (hover: hover) {
+		.entry:hover .numwheel :global(.tooth) { stroke: var(--gold); }
+	}
 
 	.plate {
 		border: 1px solid var(--rule);
@@ -159,7 +166,9 @@ const links = [
 		transition: border-color 0.3s ease;
 	}
 
-	.entry:hover .plate { border-color: var(--gold-mid); }
+	@media (hover: hover) {
+		.entry:hover .plate { border-color: var(--gold-mid); }
+	}
 
 	/* A mounted window, 16:10. Screenshots are contained, never cropped -
 	   their own aspect ratios run from 1.30 to 1.78.
@@ -239,7 +248,8 @@ const links = [
 		border-bottom: 1px solid var(--rule);
 	}
 
-	.links a:hover { color: var(--ink); border-bottom-color: var(--gold); }
+	.links a:hover,
+	.links a:active { color: var(--ink); border-bottom-color: var(--gold); }
 
 	.spec {
 		display: grid;

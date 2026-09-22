@@ -114,7 +114,8 @@ const { eyebrow, heading, headingTail, dek, links, spec, motion } = Astro.props;
 		border: 1px solid var(--cta-line);
 	}
 
-	.cta a:hover { background: var(--cta-hover); border-color: var(--cta-hover-line); }
+	.cta a:hover,
+	.cta a:active { background: var(--cta-hover); border-color: var(--cta-hover-line); }
 
 	.cta a.quiet {
 		color: var(--ink);
@@ -124,7 +125,8 @@ const { eyebrow, heading, headingTail, dek, links, spec, motion } = Astro.props;
 		padding: 0.7rem 0 0.5rem;
 	}
 
-	.cta a.quiet:hover { color: var(--gold); border-bottom-color: var(--gold); }
+	.cta a.quiet:hover,
+	.cta a.quiet:active { color: var(--gold); border-bottom-color: var(--gold); }
 
 	.figure { margin: 0; }
 
@@ -145,4 +147,12 @@ const { eyebrow, heading, headingTail, dek, links, spec, motion } = Astro.props;
 	}
 
 	figcaption .name { color: var(--gold); }
+
+	/* The legend runs out of room for three readings on one line here, and
+	   space-between then holds two of them apart at the edges with the third
+	   stranded underneath - a broken row rather than a caption. Flowing them
+	   left lets the group wrap as a block, which is what it is. */
+	@media (max-width: 620px) {
+		figcaption { justify-content: flex-start; column-gap: 1.4rem; }
+	}
 </style>

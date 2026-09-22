@@ -87,7 +87,8 @@ const leaves = notes.map((note) => ({
 		text-decoration: none;
 	}
 
-	.back:hover { color: var(--gold); }
+	.back:hover,
+	.back:active { color: var(--gold); }
 
 	.lede { margin: 2rem 0 clamp(2.5rem, 7vh, 4rem); }
 
@@ -144,7 +145,8 @@ const leaves = notes.map((note) => ({
 		border-bottom: 1px solid transparent;
 	}
 
-	.body h2 a:hover { color: var(--gold); border-bottom-color: var(--gold-mid); }
+	.body h2 a:hover,
+	.body h2 a:active { color: var(--gold); border-bottom-color: var(--gold-mid); }
 
 	.body p { margin-top: 0.7rem; max-width: 56ch; color: var(--ink-soft); }
 

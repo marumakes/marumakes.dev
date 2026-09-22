@@ -133,7 +133,8 @@ const links = [
 		border-bottom: 1px solid transparent;
 	}
 
-	.nav a:hover {
+	.nav a:hover,
+	.nav a:active {
 		color: var(--gold);
 		border-bottom-color: var(--gold-mid);
 	}
@@ -156,8 +157,25 @@ const links = [
 		line-height: inherit;
 	}
 
+	/* Once the nav wraps, the control goes to the back of it.
+
+	   At the head of a single row it stops the button sitting alone at the
+	   window's edge, which is why it leads everywhere else. Across two rows it
+	   does the opposite: it fills the first row, which pushes Correspondence -
+	   the longest label of the three - onto a line of its own, and a lone word
+	   under two others reads as a break rather than a menu. Sent to the back it
+	   pairs with Correspondence and both rows carry two things.
+
+	   460px is where the three links plus the control stop fitting one row, and
+	   check-layout.sh asserts that on both sides: a row count above, two even
+	   rows below. Applying this any earlier would put the stray mark back. */
+	@media (max-width: 460px) {
+		.sheet-control { order: 1; }
+	}
+
 	.sheet-control[hidden] { display: none; }
-	.sheet-control:hover { color: var(--gold); }
+	.sheet-control:hover,
+	.sheet-control:active { color: var(--gold); }
 
 	/* One of each pair is always off. Not visibility: the hidden one must not be
 	   read out, or the button announces both sheets at once. */

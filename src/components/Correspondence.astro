@@ -35,14 +35,18 @@ const ADDRESS = 'hello@marumakes.dev';
 		padding-top: 2rem;
 	}
 
+	.contact p { max-width: 46ch; color: var(--ink-soft); }
+
+	.reply { display: grid; justify-items: end; gap: 0.85rem; }
+
+	/* Below both rules it overrides, not above them. A media query adds no
+	   specificity, so higher up the file this tied with `.reply` and lost on
+	   source order - the address stayed hard right under a left-ranged
+	   paragraph on every phone. */
 	@media (max-width: 820px) {
 		.contact { grid-template-columns: 1fr; gap: 1.8rem; align-items: start; }
 		.reply { justify-items: start; }
 	}
-
-	.contact p { max-width: 46ch; color: var(--ink-soft); }
-
-	.reply { display: grid; justify-items: end; gap: 0.85rem; }
 
 	/* Display type here is Bodoni - mono is reserved for labels at caption
 	   size. Roman, not italic: the address is a name, not an aside. */
@@ -61,7 +65,8 @@ const ADDRESS = 'hello@marumakes.dev';
 
 	/* The same hover as every other link on the page: ink darkens, rule follows. */
 	.write:hover,
-	.write:focus-visible { color: var(--ink); border-bottom-color: var(--ink); }
+	.write:focus-visible,
+	.write:active { color: var(--ink); border-bottom-color: var(--ink); }
 
 	/* Plenty of people read mail in a browser, where a bare mailto: is a dead end. */
 	.copy {
@@ -77,7 +82,8 @@ const ADDRESS = 'hello@marumakes.dev';
 		transition: color 0.25s ease;
 	}
 
-	.copy:hover { color: var(--gold); }
+	.copy:hover,
+	.copy:active { color: var(--gold); }
 	.copy.is-copied { color: var(--mauve); }
 	.copy[hidden] { display: none; }
 </style>

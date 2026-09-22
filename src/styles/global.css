@@ -360,6 +360,35 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+/* --- reaching the controls with a thumb -------------------------------
+   Every label on this site is small by design, which makes every link built
+   from one about 21px tall - half what a finger needs. The labels are not the
+   problem and are not what changes: an invisible box is hung off each control
+   instead, so the drawing keeps its size and spacing on both sheets and only
+   the area that answers a tap grows.
+
+   `pointer: coarse` so a mouse never sees any of it. The insets are asymmetric
+   because the risk is: two rows of links sit closer together than two links on
+   one row, and a hit area that reaches into the row above hands taps to the
+   wrong link. 10px against the tightest row gap on the site (19.2px, the
+   colophon) leaves 0. Anything wider needs the gap opened first.
+
+   Prose is excluded outright. An inline link inside a paragraph has lines above
+   and below it 28.6px apart, so any hit area at all would overlap them - and a
+   reader tapping a word would get the sentence above. Body links keep their own
+   size; they sit in a measure a thumb can already find. */
+@media (pointer: coarse) {
+  :is(a, button):not(.prose a, .prose button, .edge) {
+    position: relative;
+  }
+
+  :is(a, button):not(.prose a, .prose button, .edge)::after {
+    content: '';
+    position: absolute;
+    inset: -10px -8px;
+  }
+}
+
 img,
 svg {
   max-width: 100%;

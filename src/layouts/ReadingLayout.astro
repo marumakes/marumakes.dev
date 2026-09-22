@@ -159,7 +159,8 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		text-decoration: none;
 	}
 
-	.back:hover { color: var(--gold); }
+	.back:hover,
+	.back:active { color: var(--gold); }
 
 	.masthead {
 		margin-top: 2rem;
@@ -212,7 +213,8 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		border-bottom: 1px solid var(--rule);
 	}
 
-	.links a:hover { color: var(--ink); border-bottom-color: var(--gold); }
+	.links a:hover,
+	.links a:active { color: var(--ink); border-bottom-color: var(--gold); }
 
 
 	/* Out in the right gutter, level with the top of the text, and sticky so
@@ -242,6 +244,12 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		.document { grid-template-columns: minmax(0, var(--reading)); justify-content: center; }
 		.back, .masthead, .prose { grid-column: 1; }
 
+		/* The card is the only thing here that moves, so the two above it have
+		   to say where they sit. Without this it takes the whole column's head
+		   - the reader meets six rows of mono before the title tells them what
+		   the page is. */
+		.back, .masthead { order: -2; }
+
 		/* The right margin is now only the card, so it stops being a grid and
 		   comes back into the column as one. */
 		.margin-right {
@@ -252,11 +260,16 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 			height: auto;
 		}
 
+		/* Flex, not a column grid. `grid-auto-flow: column` cannot wrap, so six
+		   rows of spec laid side by side simply ran off the page - at 768px a
+		   case study overflowed by 19px and was clipped, taking Condition with
+		   it. Wrapping is the only behaviour that holds for any number of rows
+		   at any width between here and the phone. */
 		.spec {
 			position: static;
 			width: auto;
-			grid-auto-flow: column;
-			grid-auto-columns: max-content;
+			display: flex;
+			flex-wrap: wrap;
 			gap: 1.6rem;
 			border-left: 0;
 			border-top: 1px solid var(--rule);
@@ -265,8 +278,11 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		}
 	}
 
+	/* Below this a row of spec has no width to share, so the card stacks. It is
+	   a flex column now that the wrapping row above is flex - grid-auto-flow
+	   would be read by nothing. */
 	@media (max-width: 620px) {
-		.spec { grid-auto-flow: row; gap: 0.8rem; }
+		.spec { flex-direction: column; gap: 0.8rem; }
 	}
 
 	.spec div { display: grid; gap: 0.12rem; }
