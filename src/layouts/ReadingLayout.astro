@@ -152,7 +152,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 
 	.back {
 		font-family: var(--font-mono);
-		font-size: 0.62rem;
+		font-size: var(--label);
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
 		color: var(--ink-faint);
@@ -169,7 +169,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 
 	.eyebrow {
 		font-family: var(--font-mono);
-		font-size: 0.6rem;
+		font-size: var(--label);
 		letter-spacing: 0.26em;
 		text-transform: uppercase;
 		color: var(--gold);
@@ -200,7 +200,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		flex-wrap: wrap;
 		margin-top: 1.5rem;
 		font-family: var(--font-mono);
-		font-size: 0.63rem;
+		font-size: var(--label);
 		letter-spacing: 0.18em;
 		text-transform: uppercase;
 	}
@@ -230,7 +230,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 		   is the narrower of the two margins by a long way. */
 		width: 9rem;
 		font-family: var(--font-mono);
-		font-size: 0.63rem;
+		font-size: var(--label);
 		border-left: 1px solid var(--rule);
 		padding-left: 1.4rem;
 	}
@@ -270,7 +270,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 	}
 
 	.spec div { display: grid; gap: 0.12rem; }
-	.spec dt { font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+	.spec dt { font-size: var(--label-sm); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
 	.spec dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
 
 	/* Rendered markdown. :global because the content comes from <Content />. */
@@ -350,7 +350,7 @@ const { title, description, eyebrow, heading, standfirst, back, spec, links = []
 	.prose :global(th) {
 		font-family: var(--font-mono);
 		font-weight: 500;
-		font-size: 0.56rem;
+		font-size: var(--label-sm);
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
 		color: var(--gold);

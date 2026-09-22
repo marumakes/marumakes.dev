@@ -77,6 +77,22 @@
   --font-body: Spectral, Georgia, "Iowan Old Style", serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
+  /* The label scale. Three steps by the job the label does, not by the pixel it
+	   happened to be tuned to: a key names a reading, a label is the reading or
+	   the note itself, and a control is a thing you click.
+
+	   These replace thirteen hand-tuned sizes between 0.52 and 0.66rem, which
+	   were not a scale - the site never reached its own 0.7rem ceiling and one
+	   value sat below the documented floor. A key is always a step under the
+	   label beside it; that pairing is the whole pattern and it survives here.
+
+	   check.py reads these values directly. Tokenising put the sizes out of
+	   reach of the regex that used to enforce the mono ceiling, so the ceiling
+	   is now measured here instead - see the type section there. */
+  --label-sm: 0.56rem; /* keys: the gold dt over a reading */
+  --label: 0.62rem; /* labels: readings, captions, eyebrows, notes */
+  --label-lg: 0.66rem; /* controls: the nav and the call to action */
+
   /* --- layout ----------------------------------------------
 	   Full-bleed. There is no centred max-width container; horizontal
 	   space is held by the gutter and each column caps its own measure. */
@@ -245,6 +261,35 @@
   --grain-bloom: 88, 92, 128;
   --grain-alpha: 0.035;
 }
+
+/* --- the phone ------------------------------------------------------
+   A label that reads as engraving on a monitor is simply small type held at
+   arm's length on a phone, where the same rem lands on a denser screen and a
+   worse viewing distance. The scale steps up rather than the design changing:
+   every step stays at or under the 0.7rem ceiling, so mono is still mono and
+   §3's rule is untouched.
+
+   Below the base tokens on purpose. A media query carries no extra
+   specificity, so above them this would tie and lose on source order -
+   the failure that left the Correspondence block right-ranged on every
+   phone until 17 Sep 2026. */
+@media (max-width: 620px) {
+  :root {
+    --label-sm: 0.66rem; /* 10.56px */
+    --label: 0.68rem; /* 10.88px */
+    --label-lg: 0.7rem; /* 11.20px - the ceiling */
+  }
+}
+
+/* Those three steps are nearly the same size, and that is the honest answer
+   rather than a fudge. A rem here is 16px, not the 17px §3 names: 17px is set
+   on `body`, and rem resolves against the root element, which nothing sets - so
+   every rem on this site is about 6% smaller than the document claims. Against
+   a 16px root the 0.7rem mono ceiling is 11.2px, and a label has to clear about
+   10.5px to be readable on a phone. The whole scale therefore has 0.7px to live
+   in down here, and it compresses rather than breaking the ceiling.
+   Widening it means moving the root size, which moves every rem on the site and
+   is Maru's call, not a side effect of this block. */
 
 * {
   box-sizing: border-box;

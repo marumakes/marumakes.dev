@@ -80,7 +80,7 @@ const leaves = notes.map((note) => ({
 
 	.back {
 		font-family: var(--font-mono);
-		font-size: 0.62rem;
+		font-size: var(--label);
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
 		color: var(--ink-faint);
@@ -124,7 +124,7 @@ const leaves = notes.map((note) => ({
 
 	.number {
 		font-family: var(--font-mono);
-		font-size: 0.62rem;
+		font-size: var(--label);
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
 		color: var(--gold);
@@ -153,7 +153,7 @@ const leaves = notes.map((note) => ({
 		gap: 0.8rem;
 		margin: 0;
 		font-family: var(--font-mono);
-		font-size: 0.63rem;
+		font-size: var(--label);
 		border-left: 1px solid var(--rule);
 		padding-left: clamp(1rem, 2vw, 1.5rem);
 	}
@@ -163,6 +163,6 @@ const leaves = notes.map((note) => ({
 	}
 
 	.card div { display: grid; gap: 0.12rem; }
-	.card dt { font-size: 0.54rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+	.card dt { font-size: var(--label-sm); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
 	.card dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
 </style>
