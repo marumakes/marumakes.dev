@@ -9,7 +9,7 @@ condition: complete
 screenshot: /projects/django-kanban-board/screenshot.png
 screenshotAlt: A kanban board with several columns of draggable cards
 repoUrl: https://github.com/marumakes/django-kanban-board
-order: 5
+order: 6
 ---
 
 Full CRUD on boards, lists, and cards, with drag-and-drop reordering across all three. Access control is enforced server-side, not just hidden in the UI - one user can't view or edit another user's board by guessing its URL.
